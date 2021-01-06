@@ -1,0 +1,50 @@
+from LoadData import LoadData
+import pandas as pd
+import numpy as np
+import GlobalParameters
+set1Path = GlobalParameters.set1Path
+
+
+class LoadDataSet1(LoadData):
+
+    def __init__(self, nrows=None):
+        super().__init__(set1Path, ",", datasetIndex=1, nrows=nrows)
+        self.groundTruthColumns = ['VisitorType', 'Weekend', 'Revenue']
+    def prepareDataset(self):
+        """not the best approach to hardcode it in, but after inspecting the dataset, it's not the worst idea"""
+
+        monthNumberDict = {
+            'Jan': 1,
+            'Feb': 2,
+            'Mar': 3,
+            'Apr': 4,
+            'May': 5,
+            'June': 6,
+            'Jul': 7,
+            'Aug': 8,
+            'Sep': 9,
+            'Oct': 10,
+            'Nov': 11,
+            'Dec': 12
+        }
+
+        visitorTypeDict = {
+            'New_Visitor': 0,
+            'Returning_Visitor': 1,
+            'Other': 2
+        }
+
+        self.dataFrame = pd.read_csv(
+            self.path, sep=self.seperator, nrows=self.nrows, converters={'Month': lambda x: monthNumberDict[x], 'VisitorType': lambda x: visitorTypeDict[x]})
+
+        trueFalseColumns = ['Weekend', 'Revenue']
+        for c in trueFalseColumns:
+            self.dataFrame[c] = self.dataFrame[c].astype(int)
+        
+        self.groundTruth = self.dataFrame[self.groundTruthColumns]
+        super().reduceDimensions()
+        # print(self.dataFrame)
+
+
+# ld = LoadDataSet1()
+# ld.prepareDataset()

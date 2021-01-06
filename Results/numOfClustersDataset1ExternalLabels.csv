@@ -1,0 +1,6 @@
+,0,1,42,1234
+KMeans,"{'VisitorType': 2, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 6, 'Revenue': 2}"
+GMM,"{'VisitorType': 2, 'Weekend': 5, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 8, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 5, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 5, 'Revenue': 2}"
+FuzzyCMeans,"{'VisitorType': 2, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 5, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 5, 'Revenue': 2}"
+Agglomerative,"{'VisitorType': 5, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 5, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 5, 'Weekend': 6, 'Revenue': 2}","{'VisitorType': 5, 'Weekend': 6, 'Revenue': 2}"
+Spectral,"{'VisitorType': 2, 'Weekend': 8, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 8, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 8, 'Revenue': 2}","{'VisitorType': 2, 'Weekend': 8, 'Revenue': 2}"

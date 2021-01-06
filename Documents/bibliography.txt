@@ -1,0 +1,31 @@
+AgglomerativeClustering 
+https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html
+https://www.youtube.com/watch?v=XJ3194AmH40
+
+
+KMeans:
+https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
+
+Spectral:
+https://scikit-learn.org/stable/modules/generated/sklearn.cluster.SpectralClustering.html
+https://www.youtube.com/watch?v=uxsDKhZHDcc
+https://www.youtube.com/watch?v=zkgm0i77jQ8
+
+
+GMM:
+https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html
+
+fuzzy:
+https://scikit-fuzzy.readthedocs.io/en/latest/auto_examples/plot_cmeans.html
+https://pythonhosted.org/scikit-fuzzy/api/skfuzzy.cluster.html#cmeans
+
+elbowMethod:
+https://stackoverflow.com/questions/51762514/find-the-elbow-point-on-an-optimization-curve-with-python
+https://predictivehacks.com/k-means-elbow-method-code-for-python/#:~:text=K-Means%20is%20an%20unsupervised,optimal%20for%20the%20specific%20case
+https://pypi.org/project/kneed/#input-data
+
+kruskal test:
+https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kruskal.html
+
+statistical tests:
+https://machinelearningmastery.com/statistical-hypothesis-tests-in-python-cheat-sheet/
