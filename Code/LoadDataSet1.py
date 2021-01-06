@@ -8,8 +8,9 @@ set1Path = GlobalParameters.set1Path
 class LoadDataSet1(LoadData):
 
     def __init__(self, nrows=None):
-        super().__init__(set1Path, ",", datasetIndex=1, nrows=nrows)
+        super().__init__(path=set1Path, seperator=",", datasetIndex=1, nrows=nrows)
         self.groundTruthColumns = ['VisitorType', 'Weekend', 'Revenue']
+    
     def prepareDataset(self):
         """not the best approach to hardcode it in, but after inspecting the dataset, it's not the worst idea"""
 
@@ -36,15 +37,12 @@ class LoadDataSet1(LoadData):
 
         self.dataFrame = pd.read_csv(
             self.path, sep=self.seperator, nrows=self.nrows, converters={'Month': lambda x: monthNumberDict[x], 'VisitorType': lambda x: visitorTypeDict[x]})
-
         trueFalseColumns = ['Weekend', 'Revenue']
         for c in trueFalseColumns:
             self.dataFrame[c] = self.dataFrame[c].astype(int)
         
         self.groundTruth = self.dataFrame[self.groundTruthColumns]
         super().reduceDimensions()
-        # print(self.dataFrame)
-
 
 # ld = LoadDataSet1()
 # ld.prepareDataset()

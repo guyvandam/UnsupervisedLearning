@@ -1,7 +1,7 @@
 global random_state, set1Path, set3Path, set2Path, plotsLocation, xlabel, randomStates
-set1Path = "C:\\UnsupervisedLearning\\MidTermAssignment\\dataset\\Dataset1\\online_shoppers_intention.csv"
-set3Path = "C:\\UnsupervisedLearning\\MidTermAssignment\\dataset\\Dataset3\\e-shop clothing 2008.csv"
-set2Path = "C:\\UnsupervisedLearning\\MidTermAssignment\\dataset\\Dataset2\\diabetic_data.csv"
+set1Path = "Datasets\\Dataset1\\online_shoppers_intention.csv"
+set2Path = "Datasets\\Dataset2\\diabetic_data.csv"
+set3Path = "Datasets\\Dataset3\\e-shop clothing 2008.csv"
 
 
 plotsLocation = "C:\\UnsupervisedLearning\\MidTermAssignment\\Code\\Plots\\Dataset"
