@@ -60,7 +60,7 @@ class ClusterAlgorithm():
     def getMinimazeLabel(self):
         pass
     
-    def setNumClusters(self, datasetIndex):
+    def setNumClustersDatasetIndex(self, datasetIndex):
         self.__init__(self.optimalClustersNumberDict[datasetIndex], self.randomState, self.dataFrame)
 
     def setNumClusters(self, nClusters):
