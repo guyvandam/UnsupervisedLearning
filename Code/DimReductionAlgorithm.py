@@ -8,11 +8,6 @@ class DimReductionAlgorithm():
     
     def reduceDim(self,dataFrame):
         self.dataFrame = dataFrame
-        """[
-            manipulates the dataFrame
-            changes it into a 2 dim dataFrame
-        ]
-        """
         print("Reducing Dimensions")
 
     def getDataFrame(self):

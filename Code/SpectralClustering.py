@@ -1,9 +1,5 @@
 from sklearn.cluster import SpectralClustering
 from ClusterAlgorithm import ClusterAlgorithm
-from sklearn.metrics import silhouette_samples, silhouette_score
-import matplotlib.pyplot as plt
-import GlobalParameters
-import numpy as np
 
 class SpectralClusteringAlgorithm(ClusterAlgorithm):
 

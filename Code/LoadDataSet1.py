@@ -1,6 +1,5 @@
 from LoadData import LoadData
 import pandas as pd
-import numpy as np
 import GlobalParameters
 set1Path = GlobalParameters.set1Path
 
@@ -40,7 +39,8 @@ class LoadDataSet1(LoadData):
         trueFalseColumns = ['Weekend', 'Revenue']
         for c in trueFalseColumns:
             self.dataFrame[c] = self.dataFrame[c].astype(int)
-        
+            
+        # 12330 points
         self.groundTruth = self.dataFrame[self.groundTruthColumns]
         super().reduceDimensions()
 

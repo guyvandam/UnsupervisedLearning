@@ -1,12 +1,6 @@
-import matplotlib.pyplot as plt
-import pandas as pd
-from sklearn.decomposition import PCA
-
 from sklearn.mixture import GaussianMixture
-from sklearn.preprocessing import StandardScaler
-import GlobalParameters
+
 from ClusterAlgorithm import ClusterAlgorithm
-from kneed import KneeLocator
 
 
 class GMMAlgorithm(ClusterAlgorithm):

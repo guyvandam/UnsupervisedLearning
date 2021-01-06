@@ -1,9 +1,7 @@
 from sklearn.cluster import AgglomerativeClustering
+
 from ClusterAlgorithm import ClusterAlgorithm
-from sklearn.metrics import silhouette_samples, silhouette_score
-import matplotlib.pyplot as plt
-import GlobalParameters
-import numpy as np
+
 
 class AgglomerativeClusteringAlgorithm(ClusterAlgorithm):
 
@@ -31,3 +29,11 @@ class AgglomerativeClusteringAlgorithm(ClusterAlgorithm):
         # plt.savefig(path)
         # return numClustersRange[np.argmax(silhouetteList)]
         return super().getBestNumClustersSilhouette(randomState, numClustersRange, datasetIndex)
+    
+    
+    # Can't change the sklearn Agglomerative random state
+    def checkAgainstExternalClass(self,randomStateList, externalClass):
+        return super().checkAgainstExternalClass([42], externalClass)
+
+    def getSilhouetteScoreList(self, randomStateList):
+        return super().getSilhouetteScoreList([42])

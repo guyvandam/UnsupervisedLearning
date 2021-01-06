@@ -7,7 +7,7 @@ from KMeans import KMeansAlgorithm
 from AgglomerativeClustering import AgglomerativeClusteringAlgorithm
 from SpectralClustering import SpectralClusteringAlgorithm
 
-ld = LoadDataSet1()
+ld = LoadDataSet3()
 ld.prepareDataset()
 
 calgo = KMeansAlgorithm(nComponents=1)
@@ -17,5 +17,4 @@ calgo = GMMAlgorithm(nComponents=1)
 # calgo = AgglomerativeClusteringAlgorithm(nComponents=1)
 # calgo = SpectralClusteringAlgorithm(nComponents=1,dataFrame=ld.getDataFrame())
 calgo.setDataFrame(ld.getDataFrame())
-# print(calgo.getBestNumClusters(42,8,ld.datasetIndex))
-print(calgo.getBestNumClustersExternalClass(42,8,ld))
+print(calgo.getBestNumClusters(42,8,ld.datasetIndex))

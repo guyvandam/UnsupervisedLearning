@@ -1,11 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 from sklearn.cluster import KMeans
-from sklearn.datasets import make_blobs
+
 from ClusterAlgorithm import ClusterAlgorithm
-from kneed import KneeLocator
-import GlobalParameters
+
 
 class KMeansAlgorithm(ClusterAlgorithm):
     def __init__(self, nComponents: int, randomState=None, dataFrame=None):

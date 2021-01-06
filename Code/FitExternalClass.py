@@ -26,25 +26,25 @@ class FitExternalClass():
             for clusteringAlgorithm in self.clusteringAlgorithms:
                 result[clusteringAlgorithm.name] = clusteringAlgorithm.checkAgainstExternalClass(
                     self.randomStates, content)
-
+                
             result = pd.DataFrame(result)
-            print(result)
+            result['Best'] = result.idxmax(axis=1)
 
             # ---------- Save results in a CSV file ----------
-            directory = os.path.join(os.getcwd(), f"Results\\Dataset{self.loadData.getDatasetIndex()}")
+            directory = os.path.join(os.getcwd(), f"Results\\Dataset{self.loadData.getDatasetIndex()}\\ExternalLabels")
             try:
                 os.makedirs(directory)
             except FileExistsError:
                 pass
-            result.to_csv(directory+f"\\{label}ClassifierWith{nClusters}Clusters.csv")
+            result.to_csv(directory+f"\\{label}ClassifierWith{nClusters}ClustersAnd{len(self.randomStates)}RandomStates.csv")
 
 
-# ld = LoadDataSet2()
+
 loadDataList = [LoadDataSet1(),LoadDataSet2(),LoadDataSet3()]
 
 for ld in loadDataList[2:]:
     ld.prepareDataset()
-    print(ld.getDatasetIndex())
+    print(f"Running On Dataset {ld.getDatasetIndex()}")
     clusteringAlgorithms = [
         KMeansAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
         GMMAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
@@ -54,5 +54,5 @@ for ld in loadDataList[2:]:
         SpectralClusteringAlgorithm(nComponents=1, dataFrame=ld.getDataFrame())
     ]
 
-    fec = FitExternalClass(ld, clusteringAlgorithms, GlobalParameters.randomStates[0:1])
+    fec = FitExternalClass(ld, clusteringAlgorithms[0:2], GlobalParameters.randomStates[0:2])
     fec.createCSV()

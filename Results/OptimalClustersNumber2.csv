@@ -1,0 +1,11 @@
+,1,2,3
+KMeans,4,4
+GMM,4,5
+FuzzyCMeans,6,4
+Agglomerative,4,2
+Spectral,4,2
+
+
+
+maybe it's better to hard code it to each cluster algorithm and take it from the dataframe if needed.
+better for the plots

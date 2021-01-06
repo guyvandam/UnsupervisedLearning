@@ -1,5 +1,4 @@
 from LoadData import LoadData
-import pandas as pd
 import GlobalParameters
 set3Path = GlobalParameters.set3Path
 
@@ -7,10 +6,10 @@ set3Path = GlobalParameters.set3Path
 class LoadDataSet3(LoadData):
     def __init__(self, nrows=None):
         super().__init__(set3Path, ";", datasetIndex=3, nrows=nrows)
-        self.groundTruthColumns = ['country'] #47 unique values
+        self.groundTruthColumns = ['country'] #47 unique values, about 36 after sampling.
     
     def prepareDataset(self):
-        super().prepareDataset()
+        super()._loadCSV()
         del self.dataFrame['page 2 (clothing model)']
         
         # sub-sampling to 14000 points.

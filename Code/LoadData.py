@@ -13,7 +13,7 @@ class LoadData():
         self.datasetIndex = datasetIndex
         self.dimReductionAlgorithm = dimReductionAlgorithm
 
-    def _loadCSV(self):
+    def _loadCSV(self): # protected
         self.dataFrame = pd.read_csv(
             self.path, sep=self.seperator, nrows=self.nrows)
 
@@ -34,5 +34,5 @@ class LoadData():
     def getGroundTruth(self) -> pd.DataFrame:
         return self.groundTruth
 
-    def getDatasetIndex(self):
+    def getDatasetIndex(self) -> int:
         return self.datasetIndex

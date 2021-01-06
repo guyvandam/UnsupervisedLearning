@@ -1,10 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import skfuzzy as fuzz
-import pandas as pd
+
 from ClusterAlgorithm import ClusterAlgorithm
-from kneed import KneeLocator
-import GlobalParameters
+
+
 class FuzzyCMeansAlgorithm(ClusterAlgorithm):
     def __init__(self, nComponents: int, randomState=None, dataFrame=None):
         super().__init__(nComponents, randomState, dataFrame=dataFrame)

@@ -4,7 +4,7 @@ set2Path = "Datasets\\Dataset2\\diabetic_data.csv"
 set3Path = "Datasets\\Dataset3\\e-shop clothing 2008.csv"
 
 
-plotsLocation = "C:\\UnsupervisedLearning\\MidTermAssignment\\Code\\Plots\\Dataset"
+# plotsLocation = "C:\\UnsupervisedLearning\\MidTermAssignment\\Code\\Plots\\Dataset"
 xlabel = "Number Of Clusters"
 
 random_state = 42
