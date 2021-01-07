@@ -5,8 +5,8 @@ from ClusterAlgorithm import ClusterAlgorithm
 
 
 class FuzzyCMeansAlgorithm(ClusterAlgorithm):
-    def __init__(self, nComponents: int, randomState=None, dataFrame=None):
-        super().__init__(nComponents, randomState, dataFrame=dataFrame)
+    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+        super().__init__(nClusters, randomState, dataFrame=dataFrame)
         self.fpc = None
         self.name = "FuzzyCMeans"
          

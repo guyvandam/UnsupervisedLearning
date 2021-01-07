@@ -10,9 +10,9 @@ from SpectralClustering import SpectralClusteringAlgorithm
 ld = LoadDataSet3()
 ld.prepareDataset()
 
-calgo = KMeansAlgorithm(nComponents=1)
+calgo = KMeansAlgorithm()
 
-calgo = GMMAlgorithm(nComponents=1)
+calgo = GMMAlgorithm()
 # calgo = FuzzyCMeansAlgorithm(nComponents=1)
 # calgo = AgglomerativeClusteringAlgorithm(nComponents=1)
 # calgo = SpectralClusteringAlgorithm(nComponents=1,dataFrame=ld.getDataFrame())

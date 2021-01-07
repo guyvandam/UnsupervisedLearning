@@ -29,3 +29,9 @@ https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kruskal.html
 
 statistical tests:
 https://machinelearningmastery.com/statistical-hypothesis-tests-in-python-cheat-sheet/
+
+
+kullback divergence:
+https://www.youtube.com/watch?v=pH9xkCK4ATc&t=161s
+https://machinelearningmastery.com/cross-entropy-for-machine-learning/
+https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence

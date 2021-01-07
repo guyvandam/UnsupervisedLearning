@@ -5,8 +5,8 @@ from ClusterAlgorithm import ClusterAlgorithm
 
 class AgglomerativeClusteringAlgorithm(ClusterAlgorithm):
 
-    def __init__(self, nComponents: int, randomState=None, dataFrame=None):
-        super().__init__(nComponents, dataFrame=dataFrame)
+    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+        super().__init__(nClusters, dataFrame=dataFrame)
         self.algorithmObject = AgglomerativeClustering(n_clusters=self.nClusters) # linkage is the distance between clusters.
         self.name = "Agglomerative"
 

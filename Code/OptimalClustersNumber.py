@@ -56,12 +56,11 @@ for ld in loadDataList:
     ld.prepareDataset()
     print(ld.getDatasetIndex())
     clusteringAlgorithms = [
-        KMeansAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
-        GMMAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
-        FuzzyCMeansAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
-        AgglomerativeClusteringAlgorithm(
-            nComponents=1, dataFrame=ld.getDataFrame()),
-        SpectralClusteringAlgorithm(nComponents=1, dataFrame=ld.getDataFrame())
+        KMeansAlgorithm(dataFrame=ld.getDataFrame()),
+        GMMAlgorithm(dataFrame=ld.getDataFrame()),
+        FuzzyCMeansAlgorithm(dataFrame=ld.getDataFrame()),
+        AgglomerativeClusteringAlgorithm(dataFrame=ld.getDataFrame()),
+        SpectralClusteringAlgorithm(dataFrame=ld.getDataFrame())
     ]
 
     fn = FindNumOfClusters(clusteringAlgorithms, ld, 10)

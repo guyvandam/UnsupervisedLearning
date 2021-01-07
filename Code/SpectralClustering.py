@@ -3,8 +3,8 @@ from ClusterAlgorithm import ClusterAlgorithm
 
 class SpectralClusteringAlgorithm(ClusterAlgorithm):
 
-    def __init__(self, nComponents: int, randomState=None, dataFrame=None):
-        super().__init__(nComponents, randomState, dataFrame=dataFrame)
+    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+        super().__init__(nClusters=nClusters, randomState=randomState, dataFrame=dataFrame)
         self.algorithmObject = SpectralClustering(n_clusters=self.nClusters, random_state=self.randomState)
         self.name = "Spectral"
     

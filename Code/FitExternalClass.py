@@ -28,7 +28,11 @@ class FitExternalClass():
                     self.randomStates, content)
                 
             result = pd.DataFrame(result)
-            result['Best'] = result.idxmax(axis=1)
+            maxList = result.idxmax(axis=1)
+            minList = result.idxmin(axis=1)
+            result['Max'] = maxList
+            result['Min'] = minList
+            
 
             # ---------- Save results in a CSV file ----------
             directory = os.path.join(os.getcwd(), f"Results\\Dataset{self.loadData.getDatasetIndex()}\\ExternalLabels")
@@ -42,17 +46,18 @@ class FitExternalClass():
 
 loadDataList = [LoadDataSet1(),LoadDataSet2(),LoadDataSet3()]
 
-for ld in loadDataList[2:]:
+# for ld in loadDataList[2:]:
+for ld in loadDataList:
     ld.prepareDataset()
     print(f"Running On Dataset {ld.getDatasetIndex()}")
     clusteringAlgorithms = [
-        KMeansAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
-        GMMAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
-        FuzzyCMeansAlgorithm(nComponents=1, dataFrame=ld.getDataFrame()),
-        AgglomerativeClusteringAlgorithm(
-            nComponents=1, dataFrame=ld.getDataFrame()),
-        SpectralClusteringAlgorithm(nComponents=1, dataFrame=ld.getDataFrame())
+        KMeansAlgorithm(dataFrame=ld.getDataFrame()),
+        GMMAlgorithm(dataFrame=ld.getDataFrame()),
+        FuzzyCMeansAlgorithm(dataFrame=ld.getDataFrame()),
+        AgglomerativeClusteringAlgorithm(dataFrame=ld.getDataFrame()),
+        SpectralClusteringAlgorithm(dataFrame=ld.getDataFrame())
     ]
 
-    fec = FitExternalClass(ld, clusteringAlgorithms[0:2], GlobalParameters.randomStates[0:2])
+    # fec = FitExternalClass(ld, clusteringAlgorithms[0:2], GlobalParameters.randomStates[0:2])
+    fec = FitExternalClass(ld, clusteringAlgorithms, GlobalParameters.randomStates)
     fec.createCSV()

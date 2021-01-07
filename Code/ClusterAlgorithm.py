@@ -11,25 +11,36 @@ from sklearn.metrics import silhouette_score
 
 import GlobalParameters
 
+def getProbabilities(lst: list):
+    # how many times each element appears.
+    frequencyList = list(map(Counter(lst).get, lst))
+    return np.array(frequencyList)/len(lst)
+
 
 class ClusterAlgorithm():
-    def __init__(self, nClusters: int, randomState=None, dataFrame=None):
+    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
         self.dataFrame = dataFrame
         self.nClusters = nClusters
         self.labels = None
         self.algorithmObject = None
         self.randomState = randomState
         self.name = None
-        self.optimalClustersNumberDict = {} # key - dataset index, value, number of clusters
+        # key - dataset index, value, number of clusters
+        self.optimalClustersNumberDict = None
 
     def setDataFrame(self, dataFrame):
         self.dataFrame = dataFrame
 
     def setOptimalClustersNumberDict(self, optDict=None):
-        path = str(os.path.join(os.getcwd(), "Results\\OptimalClustersNumber.csv"))
+        path = str(os.path.join(
+            os.getcwd(), "Results\\OptimalClustersNumber.csv"))
         numOfClustersDF = pd.read_csv(path)
         nClustersList = list(numOfClustersDF[self.name])
-        self.optimalClustersNumberDict = dict(zip(range(1,len(nClustersList)+1), nClustersList))
+        self.optimalClustersNumberDict = dict(
+            zip(range(1, len(nClustersList)+1), nClustersList))
+
+    def plotResults(self):
+        pass
 
     def createLabels(self):
         if self.dataFrame is None:
@@ -37,16 +48,14 @@ class ClusterAlgorithm():
         self.labels = self.algorithmObject.fit_predict(self.dataFrame)
 
     def getLabels(self) -> np.ndarray:
-        print("lables type is " + type(self.labels))
         return self.labels
 
-    def getEntropy(self):
+    def getKLDivergence(self, externalClassList):
         if self.labels is None:
             self.createLabels()
-        'need to give entropy the probability for each cluster'
-        probabilityList = np.array(list(Counter(self.labels).values()))
-        probabilityList = probabilityList / len(self.labels)
-        return entropy(probabilityList)
+
+        # entropy gets list of probabilities
+        return entropy(pk=getProbabilities(externalClassList),qk=getProbabilities(self.labels))
 
     def getMutualInformation(self, groundTruth) -> float:
         return metrics.adjusted_mutual_info_score(self.labels, groundTruth)
@@ -59,9 +68,11 @@ class ClusterAlgorithm():
 
     def getMinimazeLabel(self):
         pass
-    
+
     def setNumClustersDatasetIndex(self, datasetIndex):
-        self.__init__(self.optimalClustersNumberDict[datasetIndex], self.randomState, self.dataFrame)
+        if self.optimalClustersNumberDict is None: self.setOptimalClustersNumberDict()
+        self.__init__(
+            self.optimalClustersNumberDict[datasetIndex], self.randomState, self.dataFrame)
 
     def setNumClusters(self, nClusters):
         self.__init__(nClusters, self.randomState, self.dataFrame)
@@ -70,14 +81,16 @@ class ClusterAlgorithm():
         minimazeList = []
         numClustersRange = range(2, numClustersRange+1)
         for nClusters in numClustersRange:
-            print(f"{self.name} Clustering dataset {datasetIndex} with {nClusters} clusters and Random state {randomState}")
+            print(
+                f"{self.name} Clustering dataset {datasetIndex} with {nClusters} clusters and Random state {randomState}")
             self.__init__(nClusters, randomState, self.dataFrame)
             self.createLabels()
             minimazeList.append(self.getMinimaze())
 
         knee = None
         try:
-            kn = KneeLocator(numClustersRange, minimazeList,curve='convex', direction='decreasing')
+            kn = KneeLocator(numClustersRange, minimazeList,
+                             curve='convex', direction='decreasing')
             knee = kn.knee
         except Exception:
             print("Couldn't locate knee, returning None")
@@ -85,13 +98,16 @@ class ClusterAlgorithm():
         plt.figure()  # start a new figure.
         plt.xlabel(GlobalParameters.xlabel)
         plt.ylabel(self.getMinimazeLabel())
-        plt.title(f"Elbow Method Showing Optimal Number Of Clusters For Data-Set {datasetIndex} \n Using {self.name} Clustering With Random State {randomState}")
+        plt.title(
+            f"Elbow Method Showing Optimal Number Of Clusters For Data-Set {datasetIndex} \n Using {self.name} Clustering With Random State {randomState}")
         plt.plot(numClustersRange, minimazeList, 'bx-')
-        
-        if not knee is None:
-            plt.vlines(kn.knee, ymin=plt.ylim()[0], ymax=plt.ylim()[1], linestyles='dashed')
 
-        directory = os.path.join(os.getcwd(), f"Results\\Dataset{datasetIndex}\\OptimalClustersNumber\\Plots\\{self.name}\\{nClusters}ClustersRange")
+        if not knee is None:
+            plt.vlines(kn.knee, ymin=plt.ylim()[
+                       0], ymax=plt.ylim()[1], linestyles='dashed')
+
+        directory = os.path.join(os.getcwd(
+        ), f"Results\\Dataset{datasetIndex}\\OptimalClustersNumber\\Plots\\{self.name}\\{nClusters}ClustersRange")
         try:
             os.makedirs(directory)
         except FileExistsError:
@@ -104,7 +120,8 @@ class ClusterAlgorithm():
         silhouetteList = []
         numClustersRange = range(2, numClustersRange+1)
         for nClusters in numClustersRange:
-            print(f"{self.name} Clustering dataset {datasetIndex} with {nClusters} Clusters and Random state {randomState}")
+            print(
+                f"{self.name} Clustering dataset {datasetIndex} with {nClusters} Clusters and Random state {randomState}")
             self.__init__(nClusters, randomState, self.dataFrame)
             self.createLabels()
             silhouetteList.append(silhouette_score(
@@ -113,10 +130,12 @@ class ClusterAlgorithm():
         plt.figure()  # start a new figure.
         plt.xlabel(GlobalParameters.xlabel)
         plt.ylabel("Silhouette Score")
-        plt.title(f"Silhouette Score For Data-Set {datasetIndex} \n Using {self.name} Clustering With Random State {randomState}")
+        plt.title(
+            f"Silhouette Score For Data-Set {datasetIndex} \n Using {self.name} Clustering With Random State {randomState}")
         plt.plot(numClustersRange, silhouetteList, 'bx-')
 
-        directory = os.path.join(os.getcwd(), f"Results\\Dataset{datasetIndex}\\OptimalClustersNumber\\Plots\\{self.name}\\{nClusters}ClustersRange")
+        directory = os.path.join(os.getcwd(
+        ), f"Results\\Dataset{datasetIndex}\\OptimalClustersNumber\\Plots\\{self.name}\\{nClusters}ClustersRange")
         try:
             os.makedirs(directory)
         except FileExistsError:
@@ -126,15 +145,17 @@ class ClusterAlgorithm():
         return numClustersRange[np.argmax(silhouetteList)]
 
     def checkAgainstExternalClass(self, randomStateList, externalClass):
-        mutualInfoDict = {} # key - randoom state, value mutual info score.
+        mutualInfoDict = {}  # key - randoom state, value mutual info score.
         nClusters = len(set(externalClass))
         for randomState in randomStateList:
             self.__init__(nClusters, randomState, self.dataFrame)
             self.createLabels()
-            mutualInfoDict[str(randomState)] = self.getMutualInformation(externalClass)
+            mutualInfoDict[str(randomState)] = self.getKLDivergence(
+                externalClass)
 
         mutualInfoDict['Average'] = np.mean(list(mutualInfoDict.values()))
-        if len(set(mutualInfoDict.values())) == 1: print(f"Random State Doesn't make a change for {self.name}")
+        if len(set(mutualInfoDict.values())) == 1:
+            print(f"Random State Doesn't make a change for {self.name}")
         return mutualInfoDict
 
     def getSilhouetteScoreList(self, randomStateList):
@@ -145,5 +166,6 @@ class ClusterAlgorithm():
             self.silhouetteList.append(
                 silhouette_score(self.dataFrame, self.labels))
 
-        if len(set(self.silhouetteList)) == 1: print(f"Random State Doesn't make a change for {self.name}")
+        if len(set(self.silhouetteList)) == 1:
+            print(f"Random State Doesn't make a change for {self.name}")
         return self.silhouetteList

@@ -4,8 +4,8 @@ from ClusterAlgorithm import ClusterAlgorithm
 
 
 class KMeansAlgorithm(ClusterAlgorithm):
-    def __init__(self, nComponents: int, randomState=None, dataFrame=None):
-        super().__init__(nComponents, randomState, dataFrame=dataFrame)
+    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+        super().__init__(nClusters, randomState, dataFrame=dataFrame)
         self.algorithmObject = KMeans(
             n_clusters=self.nClusters, random_state=self.randomState) # all the parameters we need and learned in class.
         self.name = "KMeans"

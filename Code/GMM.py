@@ -5,8 +5,8 @@ from ClusterAlgorithm import ClusterAlgorithm
 
 class GMMAlgorithm(ClusterAlgorithm):
 
-    def __init__(self, nComponents: int, randomState=None, dataFrame=None):
-        super().__init__(nComponents, randomState, dataFrame=dataFrame)
+    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+        super().__init__(nClusters, randomState, dataFrame=dataFrame)
         self.algorithmObject = GaussianMixture(
             n_components=self.nClusters, random_state=self.randomState) # all the parameters we need and learned in class. Other parameters are what we disire by default.
         self.name = "GMM"

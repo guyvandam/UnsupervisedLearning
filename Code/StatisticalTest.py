@@ -81,11 +81,11 @@ nameDataObjectDict = {
 }
 
 clusteringAlgorithms = [
-    KMeansAlgorithm(nComponents=1),
-    GMMAlgorithm(nComponents=1),
-    FuzzyCMeansAlgorithm(nComponents=1),
-    AgglomerativeClusteringAlgorithm(nComponents=1),
-    SpectralClusteringAlgorithm(nComponents=1)
+    KMeansAlgorithm(),
+    GMMAlgorithm(),
+    FuzzyCMeansAlgorithm(),
+    AgglomerativeClusteringAlgorithm(),
+    SpectralClusteringAlgorithm()
 ]
 
 path = str(os.path.join(os.getcwd(), "Results\\OptimalClustersNumber.csv"))
