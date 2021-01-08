@@ -1,20 +1,18 @@
 import os
+
+import matplotlib.pyplot as plt
 import pandas as pd
-from DataSet1 import DataSet1
-from DataSet2 import DataSet2
-from DataSet3 import DataSet3
-from GMM import GMMAlgorithm
-from FuzzyCMeans import FuzzyCMeansAlgorithm
-from KMeans import KMeansAlgorithm
-from AgglomerativeClustering import AgglomerativeClusteringAlgorithm
-from SpectralClustering import SpectralClusteringAlgorithm
+
+import ClusteringAlgorithms
+import DataSets
 import GlobalParameters
+
 
 class FitExternalClass():
 
-    def __init__(self, loadData, clusteringAlgorithms, randomStates):
+    def __init__(self, loadData, randomStates, clusteringAlgorithms=None):
         self.loadData = loadData
-        self.clusteringAlgorithms = clusteringAlgorithms
+        self.clusteringAlgorithms =  ClusteringAlgorithms.clusteringAlgorithmsList if clusteringAlgorithms is None else clusteringAlgorithms
         self.randomStates = randomStates
 
     def createCSV(self):
@@ -24,40 +22,41 @@ class FitExternalClass():
             print(f"Checking {label} Classifier With {nClusters} Clusters")
             result = {}
             for clusteringAlgorithm in self.clusteringAlgorithms:
-                result[clusteringAlgorithm.name] = clusteringAlgorithm.checkAgainstExternalClass(
-                    self.randomStates, content)
-                
-            result = pd.DataFrame(result)
-            maxList = result.idxmax(axis=1)
-            minList = result.idxmin(axis=1)
-            result['Max'] = maxList
-            result['Min'] = minList
+                clusteringAlgorithm.setDataFrame(self.loadData.getDataFrame())
+                result[clusteringAlgorithm.name] = clusteringAlgorithm.checkAgainstExternalClass(self.randomStates, content)
             
-
-            # ---------- Save results in a CSV file ----------
+            # ---------- Results into a DataFrame and add min and max columns ----------
+            resultDF = pd.DataFrame(result)
+            maxList = resultDF.idxmax(axis=1)
+            minList = resultDF.idxmin(axis=1)
+            resultDF['Max'] = maxList
+            resultDF['Min'] = minList
+            
+            # ---------- Make Directory ----------
             directory = os.path.join(os.getcwd(), f"Results\\Dataset{self.loadData.getDatasetIndex()}\\ExternalLabels")
             try:
                 os.makedirs(directory)
             except FileExistsError:
                 pass
-            result.to_csv(directory+f"\\{label}ClassifierWith{nClusters}ClustersAnd{len(self.randomStates)}RandomStates.csv")
+
+
+            # ---------- Save results in a CSV file ----------
+            resultDF.to_csv(directory+f"\\{label}ClassifierWith{nClusters}ClustersAnd{len(self.randomStates)}RandomStates.csv")
+
+            # ---------- Save bar plot ----------
+            algoNameAverageFitDict = {name:fitmentDict['Average'] for name, fitmentDict in result.items()}
+            fig, ax = plt.subplots(figsize=(10, 8))
+            ax.bar(list(algoNameAverageFitDict.keys()),algoNameAverageFitDict.values())
+            fig.suptitle(f"Average Of Kullback-Leibler Divergence Between Prediction Labels And External \n '{label}' Classifier With {nClusters} Clusters For Data-Set {self.loadData.getDatasetIndex()} Across {len(self.randomStates)} Random States")
+            fig.savefig(directory + f"\\{label}ClassifierWith{nClusters}ClustersAnd{len(self.randomStates)}RandomStates.png")
+            plt.close()
 
 
 
-dataSetList = [DataSet1(), DataSet2(), DataSet3()]
+for ld in DataSets.dataSetList[2:]:
 
-# for ld in loadDataList[2:]:
-for ld in dataSetList:
     ld.prepareDataset()
     print(f"Running On Dataset {ld.getDatasetIndex()}")
-    clusteringAlgorithms = [
-        KMeansAlgorithm(dataFrame=ld.getDataFrame()),
-        GMMAlgorithm(dataFrame=ld.getDataFrame()),
-        FuzzyCMeansAlgorithm(dataFrame=ld.getDataFrame()),
-        AgglomerativeClusteringAlgorithm(dataFrame=ld.getDataFrame()),
-        SpectralClusteringAlgorithm(dataFrame=ld.getDataFrame())
-    ]
-
-    # fec = FitExternalClass(ld, clusteringAlgorithms[0:2], GlobalParameters.randomStates[0:2])
-    fec = FitExternalClass(ld, clusteringAlgorithms, GlobalParameters.randomStates)
+    
+    fec = FitExternalClass(ld, GlobalParameters.randomStates[0:2])
     fec.createCSV()

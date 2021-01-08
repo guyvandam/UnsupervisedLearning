@@ -6,8 +6,8 @@ set1Path = GlobalParameters.set1Path
 
 class DataSet1(DataSet):
 
-    def __init__(self, nrows=None):
-        super().__init__(path=set1Path, seperator=",", datasetIndex=1, nrows=nrows)
+    def __init__(self):
+        super().__init__(path=set1Path, seperator=",", datasetIndex=1)
         self.groundTruthColumns = ['VisitorType', 'Weekend', 'Revenue']
     
     def prepareDataset(self):
@@ -35,7 +35,7 @@ class DataSet1(DataSet):
         }
 
         self.dataFrame = pd.read_csv(
-            self.path, sep=self.seperator, nrows=self.nrows, converters={'Month': lambda x: monthNumberDict[x], 'VisitorType': lambda x: visitorTypeDict[x]})
+            self.path, sep=self.seperator, converters={'Month': lambda x: monthNumberDict[x], 'VisitorType': lambda x: visitorTypeDict[x]})
         trueFalseColumns = ['Weekend', 'Revenue']
         for c in trueFalseColumns:
             self.dataFrame[c] = self.dataFrame[c].astype(int)

@@ -60,6 +60,9 @@ class OptimalNClusters():
             plt.plot(nClustersRange, sillScoreList, 'o-', label=name)
             algoNameMaxScoreDict[name] = nClustersRange[np.argmax(sillScoreList)]
         plt.legend()
+        plt.title(f"Silhouette Score For Data-Set {dataset.getDatasetIndex()} With Random State {randomState}")
+        plt.xlabel("Number Of Clusters")
+        plt.ylabel("Silhouette Score")
 
         # ---------- Save Plot ----------
         directory = os.path.join(os.getcwd(), f"Results\\Dataset{dataset.getDatasetIndex()}\\OptimalNClusters")

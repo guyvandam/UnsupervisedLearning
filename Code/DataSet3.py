@@ -4,8 +4,8 @@ set3Path = GlobalParameters.set3Path
 
 
 class DataSet3(DataSet):
-    def __init__(self, nrows=None):
-        super().__init__(set3Path, ";", datasetIndex=3, nrows=nrows)
+    def __init__(self):
+        super().__init__(set3Path, ";", datasetIndex=3)
         self.groundTruthColumns = ['country'] #47 unique values, about 36 after sampling.
     
     def prepareDataset(self):
