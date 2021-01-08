@@ -53,10 +53,11 @@ class FitExternalClass():
 
 
 
-for ld in DataSets.dataSetList[0:1]:
+# for ld in DataSets.dataSetList[0:1]:
+for ld in DataSets.dataSetList:
 
     ld.prepareDataset()
     print(f"Running On Dataset {ld.getDatasetIndex()}")
     
-    fec = FitExternalClass(ld, GlobalParameters.randomStates[0:2])
+    fec = FitExternalClass(ld, GlobalParameters.randomStates)
     fec.createCSV()

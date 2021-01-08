@@ -36,6 +36,7 @@ class PlotClusters():
         for clusterAlgo in self.clusteringAlgorithms:
             clusterAlgo.setDataFrame(data)
             clusterAlgo.setNumClustersDatasetIndex(datasetIndex)
+            print(clusterAlgo.nClusters)
             algoNameSilhouetteScoreDict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
                 [randomState])[0]  # function gets a list and returns a list.
             labels = clusterAlgo.getLabels()
@@ -64,6 +65,6 @@ class PlotClusters():
 
 
 plotClusters = PlotClusters(ClusteringAlgorithms.clusteringAlgorithmsList)
-plotClusters.plotAndSaveOne(DataSet1())
-# plotClusters.plotAndSaveOne(DataSet2())
+# plotClusters.plotAndSaveOne(DataSet1())
+plotClusters.plotAndSaveOne(DataSet2())
 # plotClusters.plotAndSaveOne(DataSet3())
