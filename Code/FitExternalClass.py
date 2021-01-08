@@ -53,7 +53,7 @@ class FitExternalClass():
 
 
 
-for ld in DataSets.dataSetList[2:]:
+for ld in DataSets.dataSetList[0:1]:
 
     ld.prepareDataset()
     print(f"Running On Dataset {ld.getDatasetIndex()}")

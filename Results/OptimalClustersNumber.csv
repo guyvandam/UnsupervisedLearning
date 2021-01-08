@@ -1,4 +1,4 @@
 ,KMeans,GMM,FuzzyCMeans,Agglomerative,Spectral
-DataSet1,4,4,5,3,3
+DataSet1,3,3,3,3,3
 DataSet2,4,5,4,2,2
 DataSet3,4,4,6,4,4

@@ -24,9 +24,10 @@ class PlotClusters():
         data = ld.getDataFrame()
         algoNameSilhouetteScoreDict = {}
         randomState = GlobalParameters.random_state
-        nrows = 3
-        ncols = 2
-        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 15))
+        nrows = 2
+        ncols = 3
+        fontsize = 20
+        fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(23, 10))
         fig.suptitle(f"Data-Set {datasetIndex} Clustering With Optimal \n Clusters Number And Random State {randomState}")
         # axes indexes
         i = 0
@@ -39,8 +40,7 @@ class PlotClusters():
                 [randomState])[0]  # function gets a list and returns a list.
             labels = clusterAlgo.getLabels()
             ax[i, j].scatter(data['dim1'], data['dim2'], c=labels)
-            ax[i, j].set_title(
-                f"{clusterAlgo.name} With {clusterAlgo.getNClusters()} Clusters")
+            ax[i, j].set_title(f"{clusterAlgo.name} With {clusterAlgo.getNClusters()} Clusters", fontsize=fontsize)
 
             j += 1
             if j == ncols:
@@ -50,7 +50,7 @@ class PlotClusters():
         # ---------- bar plot for silhouette score ----------
         ax[i, j].bar(list(algoNameSilhouetteScoreDict.keys()),
                     algoNameSilhouetteScoreDict.values())
-        ax[i, j].set_title(f"Silhouette Score")
+        ax[i, j].set_title(f"Silhouette Score", fontsize=fontsize)
 
         # ---------- Save Plot ----------
         directory = os.path.join(os.getcwd(), f"Results\\Dataset{datasetIndex}\\ClusteringPlot")
