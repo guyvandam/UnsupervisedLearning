@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-from LoadDataSet1 import LoadDataSet1
-from LoadDataSet2 import LoadDataSet2
-from LoadDataSet3 import LoadDataSet3
+from DataSet1 import DataSet1
+from DataSet2 import DataSet2
+from DataSet3 import DataSet3
 from GMM import GMMAlgorithm
 from FuzzyCMeans import FuzzyCMeansAlgorithm
 from KMeans import KMeansAlgorithm
@@ -44,10 +44,10 @@ class FitExternalClass():
 
 
 
-loadDataList = [LoadDataSet1(),LoadDataSet2(),LoadDataSet3()]
+dataSetList = [DataSet1(), DataSet2(), DataSet3()]
 
 # for ld in loadDataList[2:]:
-for ld in loadDataList:
+for ld in dataSetList:
     ld.prepareDataset()
     print(f"Running On Dataset {ld.getDatasetIndex()}")
     clusteringAlgorithms = [

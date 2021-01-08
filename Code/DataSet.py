@@ -2,7 +2,7 @@ import pandas as pd
 from PCA import PCAAlgorithm
 
 
-class LoadData():
+class DataSet:
     def __init__(self, path: str, seperator: str, datasetIndex: int, nrows: int = None, dimReductionAlgorithm=None):
         self.path = path
         self.seperator = seperator
@@ -20,7 +20,7 @@ class LoadData():
     def prepareDataset(self):
         pass
 
-    def reduceDimensions(self):
+    def _reduceDimensions(self):
         if self.dimReductionAlgorithm is None:
             self.dimReductionAlgorithm = PCAAlgorithm()
         self.dimReductionAlgorithm.reduceDimensions(self.dataFrame)

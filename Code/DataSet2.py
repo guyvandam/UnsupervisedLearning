@@ -1,11 +1,11 @@
-from LoadData import LoadData
+from DataSet import DataSet
 import pandas as pd
 import numpy as np
 import GlobalParameters
 set2Path = GlobalParameters.set2Path
 
 
-class LoadDataSet2(LoadData):
+class DataSet2(DataSet):
 
     def __init__(self, nrows=None):
         super().__init__(path=set2Path, seperator=",", datasetIndex=2, nrows=nrows)
@@ -46,7 +46,7 @@ class LoadDataSet2(LoadData):
         # as requested in the assignment - "Please do not use the race and gender, and each of them can be the class"
         del self.dataFrame['race']
         del self.dataFrame['gender']
-        super().reduceDimensions()
+        super()._reduceDimensions()
 
 
 # ld = LoadDataSet2()

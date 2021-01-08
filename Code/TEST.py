@@ -1,5 +1,5 @@
 # # from KMeans import KMeansAlgorithm
-from LoadDataSet2 import LoadDataSet2
+from DataSet2 import DataSet2
 # from LoadDataSet3 import LoadDataSet3
 # from GMM import GMMAlgorithm
 # from FuzzyCMeans import FuzzyCMeansAlgorithm
@@ -19,8 +19,8 @@ from LoadDataSet2 import LoadDataSet2
 # calgo.setDataFrame(ld.getDataFrame())
 # print(calgo.getBestNumClusters(42,8,ld.datasetIndex))
 
-import LoadDatas
+import DataSets
 # ld = LoadDataSet2()
-for ld in LoadDatas.loadDataList:
+for ld in DataSets.dataSetList:
     ld.prepareDataset()
     print(ld.getDataFrame())

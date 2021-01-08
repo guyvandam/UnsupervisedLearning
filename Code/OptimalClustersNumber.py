@@ -1,7 +1,7 @@
 import pandas as pd
-from LoadDataSet1 import LoadDataSet1
-from LoadDataSet3 import LoadDataSet3
-from LoadDataSet2 import LoadDataSet2
+from DataSet1 import DataSet1
+from DataSet3 import DataSet3
+from DataSet2 import DataSet2
 from GMM import GMMAlgorithm
 from FuzzyCMeans import FuzzyCMeansAlgorithm
 from KMeans import KMeansAlgorithm
@@ -50,9 +50,9 @@ class FindNumOfClusters():
 
 
     
-loadDataList = [LoadDataSet3(),LoadDataSet2(),LoadDataSet1()]
+dataSetList = [DataSet3(), DataSet2(), DataSet1()]
 
-for ld in loadDataList:
+for ld in dataSetList:
     ld.prepareDataset()
     print(ld.getDatasetIndex())
     clusteringAlgorithms = [

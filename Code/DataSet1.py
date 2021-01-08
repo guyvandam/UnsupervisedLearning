@@ -1,10 +1,10 @@
-from LoadData import LoadData
+from DataSet import DataSet
 import pandas as pd
 import GlobalParameters
 set1Path = GlobalParameters.set1Path
 
 
-class LoadDataSet1(LoadData):
+class DataSet1(DataSet):
 
     def __init__(self, nrows=None):
         super().__init__(path=set1Path, seperator=",", datasetIndex=1, nrows=nrows)
@@ -42,7 +42,7 @@ class LoadDataSet1(LoadData):
             
         # 12330 points
         self.groundTruth = self.dataFrame[self.groundTruthColumns]
-        super().reduceDimensions()
+        super()._reduceDimensions()
 
 # ld = LoadDataSet1()
 # ld.prepareDataset()

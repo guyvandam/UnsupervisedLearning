@@ -11,6 +11,7 @@ from sklearn.metrics import silhouette_score
 
 import GlobalParameters
 
+
 def getProbabilities(lst: list):
     # how many times each element appears.
     frequencyList = list(map(Counter(lst).get, lst))
@@ -53,12 +54,15 @@ class ClusterAlgorithm():
     def getNClusters(self) -> int:
         return self.nClusters
 
+    def getName(self) -> str:
+        return self.name
+        
     def getKLDivergence(self, externalClassList):
         if self.labels is None:
             self.createLabels()
 
         # entropy gets list of probabilities
-        return entropy(pk=getProbabilities(externalClassList),qk=getProbabilities(self.labels))
+        return entropy(pk=getProbabilities(externalClassList), qk=getProbabilities(self.labels))
 
     def getMutualInformation(self, groundTruth) -> float:
         return metrics.adjusted_mutual_info_score(self.labels, groundTruth)
@@ -73,12 +77,19 @@ class ClusterAlgorithm():
         pass
 
     def setNumClustersDatasetIndex(self, datasetIndex):
-        if self.optimalClustersNumberDict is None: self.setOptimalClustersNumberDict()
+        if self.optimalClustersNumberDict is None:
+            self.setOptimalClustersNumberDict()
         self.__init__(
             self.optimalClustersNumberDict[datasetIndex], self.randomState, self.dataFrame)
 
-    def setNumClusters(self, nClusters):
-        self.__init__(nClusters, self.randomState, self.dataFrame)
+    def setNClusters(self, nClusters):
+        if not nClusters is None:
+            self.__init__(nClusters, self.randomState, self.dataFrame)
+
+    def setRandomState(self, randomState):
+        if not randomState is None:
+            self.__init__(nClusters=self.nClusters,
+                          randomState=randomState, dataFrame=self.dataFrame)
 
     def getBestNumClustersElbowMethod(self, randomState: int, numClustersRange, datasetIndex):
         minimazeList = []
@@ -119,7 +130,7 @@ class ClusterAlgorithm():
 
         return knee
 
-    def getBestNumClustersSilhouette(self, randomState, numClustersRange, datasetIndex):
+    def optimalNClustersSilhouette(self, randomState, numClustersRange, datasetIndex):
         silhouetteList = []
         numClustersRange = range(2, numClustersRange+1)
         for nClusters in numClustersRange:
@@ -160,6 +171,10 @@ class ClusterAlgorithm():
         if len(set(mutualInfoDict.values())) == 1 and not len(randomStateList) == 1:
             print(f"Random State Doesn't make a change for {self.name}")
         return mutualInfoDict
+
+    def getSilhouetteScore(self):
+        self.createLabels()
+        return silhouette_score(self.dataFrame, self.labels)
 
     def getSilhouetteScoreList(self, randomStateList):
         self.silhouetteList = []

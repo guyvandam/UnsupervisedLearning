@@ -1,7 +1,7 @@
 from LoadAndPlot import DoAll
 from GMM import GMMAlgorithm
 from PCA import PCAAlgorithm
-from LoadDataSet3 import LoadDataSet3
+from DataSet3 import DataSet3
 from KMeans import KMeansAlgorithm
 from FuzzyCMeans import FuzzyCMeans
 from AgglomerativeClustering import AgglomerativeClusteringAlgorithm 
@@ -23,7 +23,7 @@ pca = PCAAlgorithm(pcaComp)
 agglo = AgglomerativeClusteringAlgorithm(clusterComponents)
 fuzzy = FuzzyCMeans(clusterComponents)
 spec = SpectralClusteringAlgorithm(clusterComponents)
-loadData = LoadDataSet3(nrows=100)
+loadData = DataSet3(nrows=100)
 
 # da = DoAll(loadData,fuzzy,pca)
 # da = DoAll(loadData,gmm,pca)

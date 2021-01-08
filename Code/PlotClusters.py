@@ -3,10 +3,10 @@ import os
 import matplotlib.pyplot as plt
 import GlobalParameters
 import ClusteringAlgorithms
-from LoadDataSet1 import LoadDataSet1
-from LoadDataSet2 import LoadDataSet2
-from LoadDataSet3 import LoadDataSet3
-
+from DataSet1 import DataSet1
+from DataSet2 import DataSet2
+from DataSet3 import DataSet3
+import DataSets
 class PlotClusters():
 
     def __init__(self, clusteringAlgorithms):
@@ -17,6 +17,7 @@ class PlotClusters():
     """
 
     def plotAndSaveOne(self, ld):
+        
         ld.prepareDataset()
 
         datasetIndex = ld.getDatasetIndex()
@@ -26,8 +27,7 @@ class PlotClusters():
         nrows = 3
         ncols = 2
         fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=(15, 15))
-        fig.suptitle(
-            f"Data-Set {datasetIndex} Clustering With Optimal \n Clusters Number And Random State {randomState}")
+        fig.suptitle(f"Data-Set {datasetIndex} Clustering With Optimal \n Clusters Number And Random State {randomState}")
         # axes indexes
         i = 0
         j = 0
@@ -49,18 +49,21 @@ class PlotClusters():
 
         # ---------- bar plot for silhouette score ----------
         ax[i, j].bar(list(algoNameSilhouetteScoreDict.keys()),
-                     algoNameSilhouetteScoreDict.values())
+                    algoNameSilhouetteScoreDict.values())
         ax[i, j].set_title(f"Silhouette Score")
 
         # ---------- Save Plot ----------
-        directory = os.path.join(
-            os.getcwd(), f"Results\\Dataset{datasetIndex}\\")
-        fig.savefig(directory + f"ClusteringWithRandomState{randomState}.png")
+        directory = os.path.join(os.getcwd(), f"Results\\Dataset{datasetIndex}\\ClusteringPlot")
+        try:
+            os.makedirs(directory)
+        except FileExistsError:
+            pass
+        plt.savefig(directory + f"\\ClusteringPlotWithRandomState{randomState}.png")
         # plt.show()
         plt.close()
 
 
 plotClusters = PlotClusters(ClusteringAlgorithms.clusteringAlgorithmsList)
-# plotClusters.plotAndSaveOne(LoadDataSet1())
-# plotClusters.plotAndSaveOne(LoadDataSet2())
-# plotClusters.plotAndSaveOne(LoadDataSet3())
+plotClusters.plotAndSaveOne(DataSet1())
+# plotClusters.plotAndSaveOne(DataSet2())
+# plotClusters.plotAndSaveOne(DataSet3())

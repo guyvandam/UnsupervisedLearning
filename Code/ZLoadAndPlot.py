@@ -1,4 +1,4 @@
-from LoadData import LoadData
+from DataSet import DataSet
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from DimReductionAlgorithm import DimReductionAlgorithm
@@ -6,7 +6,7 @@ from ClusterAlgorithm import ClusterAlgorithm
 from sklearn.metrics import silhouette_samples, silhouette_score
 
 class DoAll():
-    def __init__(self, loadData:LoadData, clusterAlgorithm, dimReductionAlgorithm):
+    def __init__(self, loadData:DataSet, clusterAlgorithm, dimReductionAlgorithm):
         self.dataFrame = None
         self.loadData = loadData
         self.clusterAlgorithm = clusterAlgorithm

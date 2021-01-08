@@ -1,17 +1,19 @@
-from LoadDataSet1 import LoadDataSet1
-from LoadDataSet2 import LoadDataSet2
-from LoadDataSet3 import LoadDataSet3
+from DataSet1 import DataSet1
+from DataSet2 import DataSet2
+from DataSet3 import DataSet3
 from GMM import GMMAlgorithm
 from FuzzyCMeans import FuzzyCMeansAlgorithm
 from KMeans import KMeansAlgorithm
 from AgglomerativeClustering import AgglomerativeClusteringAlgorithm
 from SpectralClustering import SpectralClusteringAlgorithm
 from scipy.stats import ttest_ind
+from scipy.stats import f_oneway
 import numpy as np
 import pandas as pd
 import os
 import GlobalParameters
-
+import DataSets
+import ClusteringAlgorithms
 class StatisticalTest():
     def __init__(self, loadData, clusterAlgorithms, randomStates):
         self.loadData = loadData
@@ -24,7 +26,7 @@ class StatisticalTest():
 
         for clusterAlgorithm in self.clusterAlgorithms:
             clusterAlgorithm.setDataFrame(self.loadData.getDataFrame())
-
+            clusterAlgorithm.setNumClustersDatasetIndex(self.loadData.getDatasetIndex())
         winner = self.clusterAlgorithms[0]
         winnerSilhouetteList = winner.getSilhouetteScoreList(self.randomStates)
         winnerAvg = np.mean(winnerSilhouetteList)
@@ -34,7 +36,8 @@ class StatisticalTest():
                 self.randomStates)
             candidateAvg = np.mean(candidateSilhouetteList)
 
-            stat, p = ttest_ind(winnerSilhouetteList, candidateSilhouetteList)
+            # stat, p = ttest_ind(winnerSilhouetteList, candidateSilhouetteList) # student t-test
+            stat, p = f_oneway(winnerSilhouetteList, candidateSilhouetteList)
             columnKey = f"{winner.name}VS{candidate.name}"
             columnValue = {"pValue": p, "Stat": stat,
                            "Cluster1Avg": winnerAvg, "Cluster2Avg": candidateAvg}
@@ -54,7 +57,7 @@ class StatisticalTest():
 
         self.result = pd.DataFrame(self.result)
         print(self.result)
-        directory = os.path.join(os.getcwd(), f"Results\\Dataset{self.loadData.getDatasetIndex()}")
+        directory = os.path.join(os.getcwd(), f"Results\\Dataset{self.loadData.getDatasetIndex()}\\StatisticalTest")
         try:
             os.makedirs(directory)
         except FileExistsError:
@@ -74,47 +77,36 @@ class StatisticalTest():
 #     'Spectral': SpectralClusteringAlgorithm(nComponents=1)
 # }
 
-nameDataObjectDict = {
-    1: LoadDataSet1(),
-    2: LoadDataSet2(),
-    3: LoadDataSet3()
-}
+# nameDataObjectDict = {
+#     1: LoadDataSet1(),
+#     2: LoadDataSet2(),
+#     3: LoadDataSet3()
+# }
 
-clusteringAlgorithms = [
-    KMeansAlgorithm(),
-    GMMAlgorithm(),
-    FuzzyCMeansAlgorithm(),
-    AgglomerativeClusteringAlgorithm(),
-    SpectralClusteringAlgorithm()
-]
+# clusteringAlgorithms = [
+#     KMeansAlgorithm(),
+#     GMMAlgorithm(),
+#     FuzzyCMeansAlgorithm(),
+#     AgglomerativeClusteringAlgorithm(),
+#     SpectralClusteringAlgorithm()
+# ]
 
-path = str(os.path.join(os.getcwd(), "Results\\OptimalClustersNumber.csv"))
-numOfClustersDF = pd.read_csv(path)
+# path = str(os.path.join(os.getcwd(), "Results\\OptimalClustersNumber.csv"))
+# numOfClustersDF = pd.read_csv(path)
 
-for label, content in numOfClustersDF.iteritems():
-    content = list(content)
-    ld = nameDataObjectDict[label]
-    for i in range(len(content)):
-        clusteringAlgorithms[i].setNumClusters(content[i])
+# for label, content in numOfClustersDF.iteritems():
+#     content = list(content)
+#     ld = nameDataObjectDict[label]
+#     for i in range(len(content)):
+#         clusteringAlgorithms[i].setNumClusters(content[i])
 
     
-    ST = StatisticalTest(ld, clusteringAlgorithms, GlobalParameters.randomStates)
+#     ST = StatisticalTest(ld, clusteringAlgorithms, GlobalParameters.randomStates)
+#     ST.run()
+
+for ld in DataSets.dataSetList:
+    ST = StatisticalTest(ld, ClusteringAlgorithms.clusteringAlgorithmsList, GlobalParameters.randomStates)
     ST.run()
-
-
-# numOfClustersDict ={'KMeans': 4,
-#                     'GMM': 4,
-#                     'FuzzyCMeans': 6,
-#                     'Agglomerative': 4,
-#                     'Spectral': 4}
-# datasetIndex = 1                    
-# for algoName, nClusters in numOfClustersDict.items():
-#     nameObjectDict[algoName].setNumClusters(nClusters)
-
-               
-# ST = StatisticalTest(ld, nameObjectDict.values(), GlobalParameters.randomStates)
-# ST.run()
-
 
 
 
