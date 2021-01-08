@@ -1,7 +1,7 @@
 import pandas as pd 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import normalize # ----------------- need to add normalization
+from sklearn.preprocessing import normalize
 from DimReductionAlgorithm import DimReductionAlgorithm
 import GlobalParameters
 class PCAAlgorithm(DimReductionAlgorithm):

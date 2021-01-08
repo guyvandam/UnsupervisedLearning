@@ -50,6 +50,9 @@ class ClusterAlgorithm():
     def getLabels(self) -> np.ndarray:
         return self.labels
 
+    def getNClusters(self) -> int:
+        return self.nClusters
+
     def getKLDivergence(self, externalClassList):
         if self.labels is None:
             self.createLabels()
@@ -154,7 +157,7 @@ class ClusterAlgorithm():
                 externalClass)
 
         mutualInfoDict['Average'] = np.mean(list(mutualInfoDict.values()))
-        if len(set(mutualInfoDict.values())) == 1:
+        if len(set(mutualInfoDict.values())) == 1 and not len(randomStateList) == 1:
             print(f"Random State Doesn't make a change for {self.name}")
         return mutualInfoDict
 
@@ -166,6 +169,6 @@ class ClusterAlgorithm():
             self.silhouetteList.append(
                 silhouette_score(self.dataFrame, self.labels))
 
-        if len(set(self.silhouetteList)) == 1:
+        if len(set(self.silhouetteList)) == 1 and not len(randomStateList) == 1:
             print(f"Random State Doesn't make a change for {self.name}")
         return self.silhouetteList
