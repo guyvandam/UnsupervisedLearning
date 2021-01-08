@@ -49,8 +49,7 @@ class OptimalNClusters():
             sillScoreList = []
             clusterAlgo.setDataFrame(dataset.getDataFrame())
             for nClusters in nClustersRange:
-                print(
-                    f"{clusterAlgo.getName()} Clustering dataset {dataset.getDatasetIndex()} with {nClusters} Clusters and Random state {randomState}")
+                print(f"{clusterAlgo.getName()} Clustering dataset {dataset.getDatasetIndex()} with {nClusters} Clusters and Random state {randomState}")
                 clusterAlgo.setNClusters(nClusters)
                 sillScore = clusterAlgo.getSilhouetteScore()
                 sillScoreList.append(sillScore)
