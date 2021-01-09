@@ -60,7 +60,7 @@ class FitExternalClass():
 Due to some memory interference issues with saving the figure and acessing the CSV file for loading the data, this function can't loop over the datasets and save their figures
 """
 # ds = DataSet1()
-ds = DataSet2()
-# ds = DataSet3()
+# ds = DataSet2()
+ds = DataSet3()
 fec = FitExternalClass()
 fec.createCSV(ds)
