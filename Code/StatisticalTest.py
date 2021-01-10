@@ -32,7 +32,7 @@ class StatisticalTest():
             candidateAvg = np.mean(candidateSilhouetteList)
 
             # checking if candidate mean is bigger than winner mean.
-            # H0 = meanW >= meanC
+            # H0 = meanW >= meanC, we need to send test_ind(candidate, winner)
             stat, pValue = ttest_ind(candidateSilhouetteList, winnerSilhouetteList, equal_var=False)
             if stat < 0:
                 realPValue = 1 - pValue / 2
