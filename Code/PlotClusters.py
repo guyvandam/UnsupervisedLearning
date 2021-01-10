@@ -9,8 +9,8 @@ from DataSet3 import DataSet3
 import DataSets
 class PlotClusters():
 
-    def __init__(self, clusteringAlgorithms):
-        self.clusteringAlgorithms = clusteringAlgorithms
+    def __init__(self, clusteringAlgorithms=None):
+        self.clusteringAlgorithms = ClusteringAlgorithms.clusteringAlgorithmsList if clusteringAlgorithms is None else clusteringAlgorithms # for better readability
 
     """
     Due to some memory interference issues with saving the figure and acessing the CSV file for loading the data, this function can't loop over the datasets and save their figures
@@ -63,7 +63,7 @@ class PlotClusters():
         plt.close()
 
 
-plotClusters = PlotClusters(ClusteringAlgorithms.clusteringAlgorithmsList)
+plotClusters = PlotClusters()
 # plotClusters.plotAndSaveOne(DataSet1())
 # plotClusters.plotAndSaveOne(DataSet2())
 plotClusters.plotAndSaveOne(DataSet3())

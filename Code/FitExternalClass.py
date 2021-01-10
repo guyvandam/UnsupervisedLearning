@@ -13,11 +13,9 @@ from DataSet3 import DataSet3
 class FitExternalClass():
 
     def __init__(self, randomStateList=None, clusteringAlgorithms=None):
-        self.clusteringAlgorithms =  ClusteringAlgorithms.clusteringAlgorithmsList if clusteringAlgorithms is None else clusteringAlgorithms
+        self.clusteringAlgorithmList =  ClusteringAlgorithms.clusteringAlgorithmsList if clusteringAlgorithms is None else clusteringAlgorithms
         self.randomStateList = GlobalParameters.randomStates if randomStateList is None else randomStateList
 
-
-    
 
     def createCSV(self, dataSet):
         dataSet.prepareDataset()
@@ -25,7 +23,7 @@ class FitExternalClass():
             nClusters = len(set(content))
             print(f"Checking {label} Classifier With {nClusters} Clusters")
             result = {}
-            for clusteringAlgorithm in self.clusteringAlgorithms:
+            for clusteringAlgorithm in self.clusteringAlgorithmList:
                 clusteringAlgorithm.setDataFrame(dataSet.getDataFrame())
                 result[clusteringAlgorithm.name] = clusteringAlgorithm.checkAgainstExternalClass(self.randomStateList, content)
             
