@@ -1,11 +1,12 @@
-from scipy.stats import ttest_ind
-from scipy.stats import f_oneway
+import os
+
 import numpy as np
 import pandas as pd
-import os
-import GlobalParameters
-import DataSets
+from scipy.stats import ttest_ind
+
 import ClusteringAlgorithms
+import DataSets
+import GlobalParameters
 
 
 class StatisticalTest():
