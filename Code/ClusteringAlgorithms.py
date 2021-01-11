@@ -4,10 +4,9 @@ from FuzzyCMeans import FuzzyCMeansAlgorithm
 from AgglomerativeClustering import AgglomerativeClusteringAlgorithm
 from SpectralClustering import SpectralClusteringAlgorithm
 
-global clusteringAlgorithmsList
+global clusteringAlgorithmList
 
-
-clusteringAlgorithmsList = [
+clusteringAlgorithmList = [
     KMeansAlgorithm(),
     GMMAlgorithm(),
     FuzzyCMeansAlgorithm(),

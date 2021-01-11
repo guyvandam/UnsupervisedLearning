@@ -1,30 +1,20 @@
 from sklearn.cluster import SpectralClustering
-from ClusterAlgorithm import ClusterAlgorithm
+from ClusteringAlgorithm import ClusteringAlgorithm
 
-class SpectralClusteringAlgorithm(ClusterAlgorithm):
 
-    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+class SpectralClusteringAlgorithm(ClusteringAlgorithm):
+
+    def __init__(self, nClusters: int = None, randomState: int = None, dataFrame=None):
+        """
+        Initializing the SpectralClustering object from sklearn.cluster, with the input number of clusters.
+        Sets the algorithm name.
+
+        Args:
+            nClusters (int, optional): number of clusters. Defaults to None.
+            randomState (int, optional): random state. Defaults to None.
+            dataFrame (pandas.DataFrame, optional): data to be clustered. Defaults to None.
+        """
         super().__init__(nClusters=nClusters, randomState=randomState, dataFrame=dataFrame)
-        self.algorithmObject = SpectralClustering(n_clusters=self.nClusters, random_state=self.randomState)
+        self.algorithmObject = SpectralClustering(
+            n_clusters=self.nClusters, random_state=self.randomState)
         self.name = "Spectral"
-    
-    def getBestNumClusters(self, randomState, numClustersRange, datasetIndex):
-        # silhouetteList = []
-        # numClustersRange = range(2, numClustersRange+1)
-        # for nClusters in numClustersRange:
-        #     print(f"Spectral clustering dataset {datasetIndex} with {nClusters} clusters and Random state {randomState}")
-        #     self.algorithmObject = SpectralClustering(n_clusters=nClusters, random_state=randomState)
-        #     self.createLabels()
-        #     silhouetteList.append(silhouette_score(self.dataFrame, self.labels))
-
-        # plt.figure() # start a new figure.
-        # plt.xlabel(GlobalParameters.xlabel)
-        # plt.ylabel("Silhouette Score")
-        # plt.title("Silhouette Scores for dataset " + str(datasetIndex) + " With Spectral Clustering")
-        # plt.plot(numClustersRange, silhouetteList, 'bx-')
-
-        # path = GlobalParameters.plotsLocation + str(datasetIndex) + "\\SilhouetteScoreSpectralFor" + str(nClusters) + "Clusters.png"
-        # plt.savefig(path)
-        # return numClustersRange[np.argmax(silhouetteList)]
-        return super().getBestNumClustersSilhouette(randomState, numClustersRange, datasetIndex)
-    

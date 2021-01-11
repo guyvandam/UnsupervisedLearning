@@ -2,29 +2,44 @@ from DataSet import DataSet
 import pandas as pd
 import numpy as np
 import GlobalParameters
+
 set2Path = GlobalParameters.set2Path
 
 
 class DataSet2(DataSet):
 
     def __init__(self, nrows=None):
+        """
+        init method.
+        ground truth labels were given to us in the assignment page.
+        
+        """
         super().__init__(path=set2Path, seperator=",", datasetIndex=2)
         self.groundTruthColumns = ['race', 'gender']
 
     def prepareDataset(self):
+        """
+        Inherited Function
+        change the string into numeric represention using dictionaries, delete irrelevant data and sample 14000 points using pandas' sample() method with a fixed random state.
+        
+        """
         # doesn't tell us anything about the data.
         columnsToDelete = ['encounter_id', 'patient_nbr', 'payer_code']
-        allNumberColumns = ['admission_type_id', 'discharge_disposition_id', 'admission_source_id', 'time_in_hospital', 'num_lab_procedures',
-                            'num_procedures', 'num_medications', 'number_outpatient', 'number_emergency', 'number_inpatient', 'number_diagnoses']
+        allNumberColumns = ['admission_type_id', 'discharge_disposition_id', 'admission_source_id', 'time_in_hospital',
+                            'num_lab_procedures',
+                            'num_procedures', 'num_medications', 'number_outpatient', 'number_emergency',
+                            'number_inpatient', 'number_diagnoses']
         self.dataFrame = pd.read_csv(self.path, sep=self.seperator, na_values="?")
 
         # We'll subsample the data due to runtime and memory issues. We want about 10,000 points/rows.
         numColumns = len(self.dataFrame.columns)
+
         # "Thresh - Require that many non-NA values". We keep a row with at least 50-1 non-NA values. this gives us about 28000 points.
-        self.dataFrame.dropna(thresh=numColumns-1, inplace=True)
+        self.dataFrame.dropna(thresh=numColumns - 1, inplace=True)
+
         # taking 14000 point/rows. With a fixed random state.
         self.dataFrame = self.dataFrame.sample(
-            n=14000, random_state=GlobalParameters.random_state)
+            n=14000, random_state=GlobalParameters.randomState)
 
         for columnIndex in self.dataFrame.columns:
             if not columnIndex in allNumberColumns:
@@ -47,7 +62,3 @@ class DataSet2(DataSet):
         del self.dataFrame['race']
         del self.dataFrame['gender']
         super()._reduceDimensions()
-
-
-# ld = LoadDataSet2()
-# ld.prepareDataset()

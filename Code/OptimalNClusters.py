@@ -9,17 +9,30 @@ import ClusteringAlgorithms
 import DataSets
 
 
-class OptimalNClusters():
-    # def __init__(self, maxNCluster, clusteringAlgorithmList, randomState):
-    def __init__(self, clusteringAlgorithmList=None):
-        self.clusteringAlgorithmList = clusteringAlgorithmList
-        
-        if self.clusteringAlgorithmList is None: self.clusteringAlgorithmList = ClusteringAlgorithms.clusteringAlgorithmsList
+class OptimalNClusters:
+    def __init__(self, clusteringAlgorithmList: list = ClusteringAlgorithms.clusteringAlgorithmList):
+        """
+        init method.
 
-    def runRandomStates(self, dataset, maxNClusters, randomStateList):
+        Args:
+            clusteringAlgorithmList (list, optional): list of ClusteringAlgorithm objects for us to get the optimal NClusters of. Defaults to ClusteringAlgorithms.clusteringAlgorithmList.
+        """
+        self.clusteringAlgorithmList = clusteringAlgorithmList
+
+    def runRandomStates(self, dataset, maxNClusters: int, randomStateList: list):
+        """
+        Get the optimal number of clusters for each algorithm for every random state in the random state list, given the input data-set.
+        Saves the results in a CSV file.
+
+        Args:
+            dataset (DataSet object): the dataset we want to get the optimal number of clusters for.
+            maxNClusters (int): maximum number of clusters to check.
+            randomStateList (list): list of different Random states
+        """
         randomStateNClustersDict = {}
         for randomState in randomStateList:
-            randomStateNClustersDict[str(randomState)] = self.optimalNClusters(dataset, maxNClusters, randomState)
+            randomStateNClustersDict[str(randomState)] = self.optimalNClusters(
+                dataset, maxNClusters, randomState)
 
         resultDf = pd.DataFrame(randomStateNClustersDict)
         maxFrequencyColumn = []
@@ -27,20 +40,35 @@ class OptimalNClusters():
         for _, row in resultDf.iterrows():
             maxFrequencyColumn.append(mode(row))
             averageColumn.append(np.mean(row))
-        
+
         resultDf['MostFrequent'] = maxFrequencyColumn
         resultDf['Average'] = averageColumn
 
         # ---------- Save results in a CSV file ----------
-        directory = os.path.join(os.getcwd(), f"Results\\Dataset{dataset.getDatasetIndex()}\\OptimalNClusters")
+        directory = os.path.join(
+            os.getcwd(), f"Results\\Dataset{dataset.getDatasetIndex()}\\OptimalNClusters")
         try:
             os.makedirs(directory)
         except FileExistsError:
             pass
-        resultDf.to_csv(directory+f"\\{maxNClusters}ClusterRange{len(randomStateList)}RandomStates.csv")
+        resultDf.to_csv(
+            directory + f"\\{maxNClusters}ClusterRange{len(randomStateList)}RandomStates.csv")
 
+    def optimalNClusters(self, dataset, maxNClusters: int, randomState: int) -> dict:
+        """
+        Calculate the optimal number of clusters for the dataset, with the input random state for each algorithm by taking the NClusters with the highest Silhouette score.
+        Saves the Silhouette score plot.
+        Returns a dict with the algorithms name and optimal NClusters.
 
-    def optimalNClusters(self, dataset, maxNClusters, randomState):
+        Args:
+            dataset (DataSet object): the dataset we want to get the optimal number of clusters for.
+            maxNClusters (int): maximum number of clusters to check.
+            randomState (int): integer representing a random state.
+
+        Returns:
+            dict: key - algorithm name, value - optimal NClusters.
+        """
+
         # key - algorithm name, value - list of silhouette scores for each nClusters
         algoNameSillScoreDict = {}
         algoNameMaxScoreDict = {}
@@ -49,8 +77,10 @@ class OptimalNClusters():
             sillScoreList = []
             clusterAlgo.setDataFrame(dataset.getDataFrame())
             for nClusters in nClustersRange:
-                print(f"{clusterAlgo.getName()} Clustering dataset {dataset.getDatasetIndex()} with {nClusters} Clusters and Random state {randomState}")
+                print(
+                    f"{clusterAlgo.getName()} Clustering dataset {dataset.getDatasetIndex()} with {nClusters} Clusters and Random state {randomState}")
                 clusterAlgo.setNClusters(nClusters)
+                clusterAlgo.createLabels()
                 sillScore = clusterAlgo.getSilhouetteScore()
                 sillScoreList.append(sillScore)
 
@@ -58,14 +88,17 @@ class OptimalNClusters():
 
         for name, sillScoreList in algoNameSillScoreDict.items():
             plt.plot(nClustersRange, sillScoreList, 'o-', label=name)
-            algoNameMaxScoreDict[name] = nClustersRange[np.argmax(sillScoreList)]
+            algoNameMaxScoreDict[name] = nClustersRange[np.argmax(
+                sillScoreList)]
         plt.legend()
-        plt.title(f"Silhouette Score For Data-Set {dataset.getDatasetIndex()} With Random State {randomState}")
+        plt.title(
+            f"Silhouette Score For Data-Set {dataset.getDatasetIndex()} With Random State {randomState}")
         plt.xlabel("Number Of Clusters")
         plt.ylabel("Silhouette Score")
 
         # ---------- Save Plot ----------
-        directory = os.path.join(os.getcwd(), f"Results\\Dataset{dataset.getDatasetIndex()}\\OptimalNClusters")
+        directory = os.path.join(
+            os.getcwd(), f"Results\\Dataset{dataset.getDatasetIndex()}\\OptimalNClusters")
         try:
             os.makedirs(directory)
         except FileExistsError:
@@ -75,8 +108,8 @@ class OptimalNClusters():
         return algoNameMaxScoreDict
 
 
-randomStateList = [0, 1, 42, 1234, 10, 123, 2, 5, 12, 12345] # 10 most comman random seeds.
-
+# 10 most comman random seeds.
+randomStateList = [0, 1, 42, 1234, 10, 123, 2, 5, 12, 12345]
 
 onc = OptimalNClusters()
 for ds in DataSets.dataSetList:

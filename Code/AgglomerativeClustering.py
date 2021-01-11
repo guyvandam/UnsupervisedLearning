@@ -1,18 +1,33 @@
 from sklearn.cluster import AgglomerativeClustering
 
-from ClusterAlgorithm import ClusterAlgorithm
+from ClusteringAlgorithm import ClusteringAlgorithm
 
 
-class AgglomerativeClusteringAlgorithm(ClusterAlgorithm):
+class AgglomerativeClusteringAlgorithm(ClusteringAlgorithm):
 
-    def __init__(self, nClusters=None, randomState=None, dataFrame=None):
+    def __init__(self, nClusters: int = None, dataFrame=None):
+        """
+        Initializing the AgglomerativeClustering object from sklearn.cluster, with the input number of clusters.
+        Sets the algorithm name.
+        Args:
+            nClusters (int, optional): [description]. number of clusters.
+            dataFrame (pandas.DataFrame, optional): [description]. data to be clustered.
+        """
         super().__init__(nClusters, dataFrame=dataFrame)
-        self.algorithmObject = AgglomerativeClustering(n_clusters=self.nClusters) # linkage is the distance between clusters.
+        self.algorithmObject = AgglomerativeClustering(
+            n_clusters=self.nClusters)
         self.name = "Agglomerative"
 
-    # Can't change the sklearn Agglomerative random state
-    def checkAgainstExternalClass(self,randomStateList, externalClass):
-        return super().checkAgainstExternalClass([42], externalClass)
+    def checkAgainstExternalClass(self, randomStateList, externalLabels) -> list:
+        """
+        AgglomerativeClustering object from sklearn.cluster doesn't get a random state as input, so the is no need to
+        call to parent function that repeats for every random state.
+        """
+        return super().checkAgainstExternalClass([42], externalLabels)
 
     def getSilhouetteScoreList(self, randomStateList):
-        return len(randomStateList) * super().getSilhouetteScoreList([42]) # list with the same value.
+        """
+        AgglomerativeClustering object from sklearn.cluster doesn't get a random state as input, so the is no need to
+        call to parent function that repeats for every random state.
+        """
+        return len(randomStateList) * super().getSilhouetteScoreList([42])

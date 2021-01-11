@@ -10,31 +10,49 @@ import GlobalParameters
 
 
 class StatisticalTest():
-    def __init__(self, clusteringAlgorithmList=None, randomStateList=None):
-        self.clusteringAlgorithmList = ClusteringAlgorithms.clusteringAlgorithmsList if clusteringAlgorithmList is None else clusteringAlgorithmList
-        self.randomStateList = GlobalParameters.randomStates if randomStateList is None else randomStateList
+    def __init__(self, randomStateList: list = GlobalParameters.randomStateList,
+                 clusteringAlgorithmList: list = ClusteringAlgorithms.clusteringAlgorithmList):
+        """
+        init method.
+
+        Args:
+            randomStateList (list, optional): list of random states. Defaults to GlobalParameters.randomStateList.
+            clusteringAlgorithmList (list, optional): list of Clustering Algorithm Objects. Defaults to ClusteringAlgorithms.clusteringAlgorithmList.
+        """
+        self.clusteringAlgorithmList = clusteringAlgorithmList
+        self.randomStateList = randomStateList
 
         self.result = {}
 
-    def run(self, dataset):
-        dataset.prepareDataset()
+    def createCSV(self, dataSet):
+        """
+        We perfrom the statistical test seeing in the paper. essentially finding the maximum with our newley defined order.
+        We save the result in a dictionary which later transforms into a pandas.DataFrame which is saved to a CSV file.
+
+        Args:
+            dataSet (DataSet object): data-set we want to check the fitment between external labels and prediction labels.
+        """
+        dataSet.prepareDataset()
 
         for clusterAlgorithm in self.clusteringAlgorithmList:
-            clusterAlgorithm.setDataFrame(dataset.getDataFrame())
-            clusterAlgorithm.setNumClustersDatasetIndex(
-                dataset.getDatasetIndex())
+            clusterAlgorithm.setDataFrame(dataSet.getDataFrame())
+            clusterAlgorithm.setNClustersDatasetIndex(
+                dataSet.getDatasetIndex())
 
         winner = self.clusteringAlgorithmList[0]
-        winnerSilhouetteList = winner.getSilhouetteScoreList(self.randomStateList)
+        winnerSilhouetteList = winner.getSilhouetteScoreList(
+            self.randomStateList)
         winnerAvg = np.mean(winnerSilhouetteList)
 
         for candidate in self.clusteringAlgorithmList[1:]:
-            candidateSilhouetteList = candidate.getSilhouetteScoreList(self.randomStateList)
+            candidateSilhouetteList = candidate.getSilhouetteScoreList(
+                self.randomStateList)
             candidateAvg = np.mean(candidateSilhouetteList)
 
             # checking if candidate mean is bigger than winner mean.
             # H0 = meanW >= meanC, we need to send test_ind(candidate, winner)
-            stat, pValue = ttest_ind(candidateSilhouetteList, winnerSilhouetteList, equal_var=False)
+            stat, pValue = ttest_ind(
+                candidateSilhouetteList, winnerSilhouetteList, equal_var=False)
             if stat < 0:
                 realPValue = 1 - pValue / 2
             else:
@@ -53,14 +71,16 @@ class StatisticalTest():
 
         self.result = pd.DataFrame(self.result)
         print(self.result)
-        directory = os.path.join(os.getcwd(), f"Results\\Dataset{dataset.getDatasetIndex()}\\StatisticalTest")
+        directory = os.path.join(
+            os.getcwd(), f"Results\\Dataset{dataSet.getDatasetIndex()}\\StatisticalTest")
         try:
             os.makedirs(directory)
         except FileExistsError:
             pass
-        self.result.to_csv(directory + f"\\StatisticalTestWith{len(self.randomStateList)}RandomStates.csv")
+        self.result.to_csv(
+            directory + f"\\StatisticalTestWith{len(self.randomStateList)}RandomStates.csv")
 
 
 for ds in DataSets.dataSetList:
     ST = StatisticalTest()
-    ST.run(ds)
+    ST.createCSV(ds)
