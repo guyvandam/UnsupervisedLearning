@@ -7,7 +7,14 @@ from scipy.stats import entropy
 from sklearn.metrics import silhouette_score
 
 
-def getProbabilities(lst: list):
+def getProbabilities(lst: list) -> np.ndarray:
+    """
+    Returns the a list of the probabilities for each item in the list by counting the number of times each item has
+    appeared and dividing it by the nubmer of total elements. Args: lst (list): list of numbers
+
+    Returns:
+        np.ndarray: list of probabilities for the items in the input list.
+    """
     # how many times each element appears.
     frequencyList = list(map(Counter(lst).get, lst))
     return np.array(frequencyList) / len(lst)
