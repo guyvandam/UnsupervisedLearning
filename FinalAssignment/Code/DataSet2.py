@@ -13,9 +13,19 @@ class Dataset2(DataSet):
         )
 
     def prepareDataset(self):
-        super()._loadCSV()
+        super()._loadCSV(na_values = '?')
+        
+        ################################ extract ground truth column.
+        self.ground_truth = self.df[self.df.columns[-1]]
+        del self.df[self.df.columns[-1]]
 
-        print(self.df)
+        ################################ managable size so we don't need to downsample.
 
-ds = Dataset2()
-ds.prepareDataset()
+        ################################ drop rows with nan values
+        # self.df.dropna(axis = 1, how = 'any', inplace = True)
+        
+        
+
+# ds = Dataset2()
+# ds.prepareDataset()
+# print(df.get_data_frame)

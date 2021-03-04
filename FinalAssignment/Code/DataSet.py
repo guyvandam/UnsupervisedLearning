@@ -1,7 +1,6 @@
 import pandas as pd
 from PCA import PCAAlgorithm
 
-
 class DataSet:
     def __init__(self, path: str, csv_seperator: str, index: int, n_classes: int, dimReductionAlgorithm=PCAAlgorithm()):
         """
@@ -17,17 +16,17 @@ class DataSet:
         self.csv_seperator = csv_seperator
         self.df = pd.DataFrame()
         # self.ground_truth_columns_list = [] we can drop it as we only have 1 column for ground truth.
-        self.groundTruth = None
+        self.ground_truth = None
         self.index = index
         self.dimReductionAlgorithm = dimReductionAlgorithm
         self.n_classes = n_classes # number of classes.
 
-    def _loadCSV(self):
+    def _loadCSV(self, na_values=None):
         """
         Protected
         Load the CSV file at the path location into a pandas DataFrame
         """
-        self.df = pd.read_csv(self.csv_file_path, sep=self.csv_seperator)
+        self.df = pd.read_csv(self.csv_file_path, sep=self.csv_seperator, na_values=na_values)
 
     def prepareDataset(self):
         """
@@ -61,7 +60,7 @@ class DataSet:
         Returns:
             pd.DataFrame: ground truth DataFrame
         """
-        return self.groundTruth
+        return self.ground_truth
 
     def get_index(self) -> int:
         """
@@ -71,3 +70,18 @@ class DataSet:
             int: the data-set index
         """
         return self.index
+
+    def get_n_classes(self) -> int:
+        """
+        Returns:
+            int: n_class - number of classes for the dataset.
+        """
+        return self.n_classes
+
+    def drop_rows_by_non_na_precent(self, non_na_precent):
+        ################################ thresh -  Require that many non-NA values.
+        num_columns = len(self.df.columns)
+        precent_fraction = float(non_na_precent / 100)
+        non_na_number_rows = int(num_columns * precent_fraction)
+        self.df.dropna(axis = 0, thresh = int(non_na_number_rows), inplace = True)
+
