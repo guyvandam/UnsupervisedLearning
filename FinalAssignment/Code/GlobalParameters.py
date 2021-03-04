@@ -1,8 +1,17 @@
-global set1Path, set3Path, set2Path, randomStateList, randomState
+import os
+global DATASET1_CSV_FILE_PATH, DATASET2_CSV_FILE_PATH, DATASET1_NUMBER_OF_CLASSES, DATASET2_NUMBER_OF_CLASSES, randomStateList, randomState
 
-set1Path = "Datasets\\Dataset1\\online_shoppers_intention.csv"
-set2Path = "Datasets\\Dataset2\\diabetic_data.csv"
-set3Path = "Datasets\\Dataset3\\e-shop clothing 2008.csv"
+
+DATASETS_CSV_FILES_FOLDER = os.getcwd() + "\\DataSets\\"
+
+DATASET1_CSV_FILE_NAME = "allUsers.lcl.csv"
+DATASET2_CSV_FILE_NAME = "HTRU_2.csv"
+
+DATASET1_CSV_FILE_PATH = DATASETS_CSV_FILES_FOLDER + DATASET1_CSV_FILE_NAME
+DATASET2_CSV_FILE_PATH = DATASETS_CSV_FILES_FOLDER + DATASET2_CSV_FILE_NAME
+
+DATASET1_NUMBER_OF_CLASSES = 5
+DATASET2_NUMBER_OF_CLASSES = 2
 
 randomState = 42
 randomStateList = [68, 94, 60, 17, 1, 63, 11, 77, 4, 45, 24, 15, 3, 42, 32, 21, 62, 7, 0, 78, 9, 61, 57, 84, 19, 56, 2,
