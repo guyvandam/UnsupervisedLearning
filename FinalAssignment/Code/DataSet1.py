@@ -27,11 +27,11 @@ class Dataset1(DataSet):
         super().drop_rows_by_non_na_precent(non_na_precent = 90)
         
         ############################### fill na with row-wise median.
-        self.df.fillna(value = self.df.median(axis = 0), axis = 0, inplace = True)
+        self.df.fillna(value = self.df.median(axis = 1), axis = 1, inplace = True)
         
         
 
 
 ds1 = Dataset1()
 ds1.prepareDataset()
-print("dataset1", ds1.get_data_frame)
+print("dataset1\n", ds1.get_data_frame())

@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import GlobalParameters
 import ClusteringAlgorithmsImportFile
 from ClusteringAlgorithmsImportFile import clusteringAlgorithmList
-from DataSet1 import DataSet1
-from DataSet2 import DataSet2
+from Dataset1 import Dataset1
+from Dataset2 import Dataset2
 import DataSetsImportFile
 
 

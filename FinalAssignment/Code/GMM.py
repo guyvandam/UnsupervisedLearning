@@ -16,5 +16,5 @@ class GMMAlgorithm(ClusteringAlgorithm):
             dataFrame (pandas.DataFrame, optional): data to be clustered. Defaults to None.
         """
         super().__init__(nClusters, randomState, dataFrame=dataFrame)
-        self.algorithmObject = GaussianMixture(n_components=self.nClusters, random_state=self.randomState)
+        self.algorithm_object = GaussianMixture(n_components=self.nClusters, random_state=self.randomState)
         self.name = "GMM"

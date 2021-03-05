@@ -4,7 +4,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 from scipy.stats import entropy
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_score, silhouette_samples
 
 
 def getProbabilities(lst: list) -> np.ndarray:
@@ -21,7 +21,7 @@ def getProbabilities(lst: list) -> np.ndarray:
 
 
 class ClusteringAlgorithm:
-    def __init__(self, nClusters: int = None, randomState: int = None, dataFrame=None):
+    def __init__(self, nClusters: int = None, randomState: int = None, dataFrame = None):
         """
         init function.
 
@@ -33,7 +33,7 @@ class ClusteringAlgorithm:
         self.dataFrame = dataFrame
         self.nClusters = nClusters
         self.labels = None
-        self.algorithmObject = None
+        self.algorithm_object = None
         self.randomState = randomState
         self.name = None
         # key - dataset index, value - number of clusters
@@ -69,7 +69,7 @@ class ClusteringAlgorithm:
         """
         if self.dataFrame is None:
             raise RuntimeError("Data not initialzed")
-        self.labels = self.algorithmObject.fit_predict(self.dataFrame)
+        self.labels = self.algorithm_object.fit_predict(self.dataFrame)
 
     def getLabels(self) -> np.ndarray:
         """
@@ -198,3 +198,34 @@ class ClusteringAlgorithm:
         if len(set(silhouetteList)) == 1 and not len(randomStateList) == 1:
             print(f"Random State Doesn't make a change for {self.getName()}")
         return silhouetteList
+
+    def get_anomalous_indices_silhouette_coefficients(self, dataset):
+        
+        anomalous_points_df = pd.DataFrame()
+        dataset_df = dataset.get_data_frame().copy()
+
+        while True:
+            self.labels = self.algorithm_object.fit_predict(dataset_df)
+
+
+            silhouette_coefficient_list =  silhouette_samples(dataset_df, self.labels)
+
+            ############################## get indices of negative silhouette coefficients
+            negative_coefficients_indices_list = silhouette_coefficient_list < 0
+            
+            ############################## remove and save anomalous rows.
+            temp_anomalous_points_df = dataset_df.iloc[negative_coefficients_indices_list]
+            ############################## remove the the anomalous rows. the "drop" function didn't work with the indices.
+            ############################## add them and remove duplicate, the "temp_df" is a subset of the dataset_df.
+            dataset_df = pd.concat([dataset_df, temp_anomalous_points_df]).drop_duplicates(keep = False)
+                
+        
+            if temp_anomalous_points_df.empty:
+                break
+
+            if anomalous_points_df.empty:
+                anomalous_points_df = temp_anomalous_points_df
+            else:
+                anomalous_points_df= pd.concat([anomalous_points_df,temp_anomalous_points_df])
+
+        print("anomalous points df \n ", anomalous_points_df)
