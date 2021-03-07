@@ -1,8 +1,9 @@
 import pandas as pd
 from PCA import PCAAlgorithm
+import GlobalFunctions
 
 class DataSet:
-    def __init__(self, path: str, csv_seperator: str, index: int, n_classes: int, dimReductionAlgorithm=PCAAlgorithm()):
+    def __init__(self, index: int, csv_seperator: str = ','):
         """
         init method.
 
@@ -12,14 +13,13 @@ class DataSet:
             datasetIndex (int): the data-set index.
             dimReductionAlgorithm (DimRecutionAlgorithm object, optional): dimension redcution algorithm. Defaults to PCAAlgorithm().
         """
-        self.csv_file_path = path
-        self.csv_seperator = csv_seperator
-        self.df = pd.DataFrame()
-        # self.ground_truth_columns_list = [] we can drop it as we only have 1 column for ground truth.
-        self.ground_truth = None
         self.index = index
-        self.dimReductionAlgorithm = dimReductionAlgorithm
-        self.n_classes = n_classes # number of classes.
+        self.csv_seperator = csv_seperator
+        self.csv_file_path = GlobalFunctions.get_dataset_CSV_file_path(self.index)
+        self.n_classes = GlobalFunctions.get_dataset_n_classes(self.index) # number of classes.
+        
+        self.df = pd.DataFrame()
+        self.ground_truth = None
 
     def _loadCSV(self, na_values=None):
         """
@@ -35,12 +35,12 @@ class DataSet:
         """
         pass
 
-    def _reduceDimensions(self):
+    def _reduceDimensions(self, dim_reduction_algorithm_obj = PCAAlgorithm()):
         """
         reduce the data demension with the dimension reduction algorithm.
         """
-        self.dimReductionAlgorithm.reduceDimensions(self.df)
-        self.df = self.dimReductionAlgorithm.getDataFrame()
+        dim_reduction_algorithm_obj.reduceDimensions(self.df)
+        self.df = dim_reduction_algorithm_obj.getDataFrame()
 
     def get_data_frame(self) -> pd.DataFrame:
         """

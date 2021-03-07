@@ -1,15 +1,12 @@
 from DataSet import DataSet
-import GlobalParameters
+
 
 
 class Dataset2(DataSet):
     
     def __init__(self):
         super().__init__(
-            path = GlobalParameters.DATASET2_CSV_FILE_PATH,
-            csv_seperator = ',',
-            index = 2,
-            n_classes = GlobalParameters.DATASET2_NUMBER_OF_CLASSES
+            index = 2
         )
 
     def prepareDataset(self):
@@ -28,4 +25,4 @@ class Dataset2(DataSet):
 
 # ds = Dataset2()
 # ds.prepareDataset()
-# print(df.get_data_frame)
+# print(ds.get_data_frame())

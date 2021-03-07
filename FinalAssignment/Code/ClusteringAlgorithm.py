@@ -205,9 +205,10 @@ class ClusteringAlgorithm:
         dataset_df = dataset.get_data_frame().copy()
 
         while True:
-            self.labels = self.algorithm_object.fit_predict(dataset_df)
-
-
+            # self.labels = self.algorithm_object.fit_predict(dataset_df)
+            self.dataFrame = dataset_df
+            self.createLabels()
+                        
             silhouette_coefficient_list =  silhouette_samples(dataset_df, self.labels)
 
             ############################## get indices of negative silhouette coefficients
@@ -228,4 +229,4 @@ class ClusteringAlgorithm:
             else:
                 anomalous_points_df= pd.concat([anomalous_points_df,temp_anomalous_points_df])
 
-        print("anomalous points df \n ", anomalous_points_df)
+        print("anomalous points df \n", anomalous_points_df)

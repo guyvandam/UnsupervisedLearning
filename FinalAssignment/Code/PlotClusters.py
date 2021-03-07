@@ -1,3 +1,4 @@
+from Code.GlobalFunctions import get_folder_path
 import time
 import os
 import matplotlib.pyplot as plt
@@ -73,6 +74,11 @@ class PlotClusters():
             directory + f"\\ClusteringPlotWithRandomState{randomState}.png")
         plt.close()
 
+def get_clustering_plot_file_path(dataset_index):
+    clustering_plot_folder_name = "ClusteringPlot"
+    results_folder_path = GlobalFunctions.get_results_folder_path()
+
+    file_path = get_folder_path(clustering_plot_folder_name, results_folder_path)
 
 # Due to some memory interference issues with saving the figure and acessing the CSV file for loading the data, this function can't loop over the datasets and save their figures in one run.
 plotClusters = PlotClusters()
