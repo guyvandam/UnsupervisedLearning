@@ -1,7 +1,6 @@
-from DataSet1 import DataSet1
-from DataSet3 import DataSet3
-from DataSet2 import DataSet2
+from Dataset1 import Dataset1
+from Dataset2 import Dataset2
 
-global dataSetList
+global dataset_obj_list
 
-dataSetList = [DataSet1(), DataSet2(), DataSet3()]
+dataset_obj_list = [Dataset1(), Dataset2()]

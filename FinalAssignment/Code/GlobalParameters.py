@@ -6,6 +6,8 @@ RESULTS_FOLDER_NAME = "Results"
 
 EXTERNAL_LABELS_FITTMENT_RESULTS_FOLDER = "ExternalLabelsFittment"
 
+OPTIMAL_N_CLUSTERS_FOLDER_NAME = "OptimalNClusters"
+
 RESULTS_DATASET_FOLDER_NAME = "Dataset"
 
 ############################## datasets csv files folder

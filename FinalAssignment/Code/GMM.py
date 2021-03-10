@@ -1,6 +1,6 @@
 from sklearn.mixture import GaussianMixture
 
-from ClusteringAlgorithm import ClusteringAlgorithm
+from ClusteringAlgorithmInterface import ClusteringAlgorithm
 
 
 class GMMAlgorithm(ClusteringAlgorithm):

@@ -16,7 +16,7 @@ class PCAAlgorithm(DimReductionAlgorithm):
             nComponents (int, optional): number of components/dimensions we want the data to be. Defaults to 2.
         """
         super().__init__(nComponents)
-        self.algorithmObject = PCA(n_components=self.nComponents, random_state=GlobalParameters.randomState)
+        self.algorithmObject = PCA(n_components=self.nComponents, random_state=GlobalParameters.random_state)
 
     def normalize(self):
         """

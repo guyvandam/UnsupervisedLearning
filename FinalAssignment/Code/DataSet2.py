@@ -1,8 +1,8 @@
-from DataSet import DataSet
+from DatasetInterface import Dataset
 
 
 
-class Dataset2(DataSet):
+class Dataset2(Dataset):
     
     def __init__(self):
         super().__init__(
@@ -21,8 +21,7 @@ class Dataset2(DataSet):
         ################################ drop rows with nan values
         # self.df.dropna(axis = 1, how = 'any', inplace = True)
         
-        
-
-# ds = Dataset2()
-# ds.prepareDataset()
-# print(ds.get_data_frame())
+if __name__ == "__main__":
+    ds = Dataset2()
+    ds.prepareDataset()
+    print(ds.get_data_frame())

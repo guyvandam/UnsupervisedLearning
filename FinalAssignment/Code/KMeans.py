@@ -1,6 +1,6 @@
 from sklearn.cluster import KMeans
 
-from ClusteringAlgorithm import ClusteringAlgorithm
+from ClusteringAlgorithmInterface import ClusteringAlgorithm
 
 
 class KMeansAlgorithm(ClusteringAlgorithm):
@@ -15,6 +15,6 @@ class KMeansAlgorithm(ClusteringAlgorithm):
             dataFrame (pandas.DataFrame, optional): data to be clustered. Defaults to None.
         """
         super().__init__(nClusters, randomState, dataFrame=dataFrame)
-        self.algorithmObject = KMeans(
+        self.algorithm_object = KMeans(
             n_clusters=self.nClusters, random_state=self.randomState)
         self.name = "KMeans"

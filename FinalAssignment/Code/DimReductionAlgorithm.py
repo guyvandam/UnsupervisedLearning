@@ -9,7 +9,7 @@ class DimReductionAlgorithm:
         """
         self.nComponents = nComponents
         self.dataFrame = None
-        self.algorithmObject = None
+        self.algorithm_object = None
         self.dims = ['dim1', 'dim2']
 
     def reduceDimensions(self, dataFrame):

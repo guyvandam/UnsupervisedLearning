@@ -1,5 +1,5 @@
 from sklearn.cluster import SpectralClustering
-from ClusteringAlgorithm import ClusteringAlgorithm
+from ClusteringAlgorithmInterface import ClusteringAlgorithm
 
 
 class SpectralClusteringAlgorithm(ClusteringAlgorithm):
@@ -15,6 +15,6 @@ class SpectralClusteringAlgorithm(ClusteringAlgorithm):
             dataFrame (pandas.DataFrame, optional): data to be clustered. Defaults to None.
         """
         super().__init__(nClusters=nClusters, randomState=randomState, dataFrame=dataFrame)
-        self.algorithmObject = SpectralClustering(
+        self.algorithm_object = SpectralClustering(
             n_clusters=self.nClusters, random_state=self.randomState)
         self.name = "Spectral"

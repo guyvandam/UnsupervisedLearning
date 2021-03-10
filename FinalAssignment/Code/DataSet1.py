@@ -1,7 +1,7 @@
-from DataSet import DataSet
+from DatasetInterface import Dataset
 GROUND_TRUTH_COLUMN = 'Class'
 
-class Dataset1(DataSet):    
+class Dataset1(Dataset):    
     def __init__(self):
         super().__init__(
             index = 1
@@ -14,7 +14,8 @@ class Dataset1(DataSet):
         ################################ drop the first row. full of zeros.
         self.df.drop(index = 0, axis = 0, inplace = True)
 
-        # self.df.drop(columns = ['User'])
+        ############################### drop user column.
+        self.df.drop(columns = ['User'])
 
         ################################ extract ground truth column.
         self.ground_truth = self.df.pop(GROUND_TRUTH_COLUMN)

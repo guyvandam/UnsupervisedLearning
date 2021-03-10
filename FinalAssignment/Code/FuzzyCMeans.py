@@ -1,7 +1,7 @@
 import numpy as np
 import skfuzzy as fuzz
 
-from ClusteringAlgorithm import ClusteringAlgorithm
+from ClusteringAlgorithmInterface import ClusteringAlgorithm
 
 
 class FuzzyCMeansAlgorithm(ClusteringAlgorithm):

@@ -1,11 +1,11 @@
 from sklearn.cluster import AgglomerativeClustering
 
-from ClusteringAlgorithm import ClusteringAlgorithm
+from ClusteringAlgorithmInterface import ClusteringAlgorithm
 
 
 class AgglomerativeClusteringAlgorithm(ClusteringAlgorithm):
 
-    def __init__(self, nClusters: int = None, dataFrame=None):
+    def __init__(self, nClusters: int = None, randomState: int = None, dataFrame=None):
         """
         Initializing the AgglomerativeClustering object from sklearn.cluster, with the input number of clusters.
         Sets the algorithm name.
@@ -14,7 +14,7 @@ class AgglomerativeClusteringAlgorithm(ClusteringAlgorithm):
             dataFrame (pandas.DataFrame, optional): [description]. data to be clustered.
         """
         super().__init__(nClusters, dataFrame=dataFrame)
-        self.algorithmObject = AgglomerativeClustering(
+        self.algorithm_object = AgglomerativeClustering(
             n_clusters=self.nClusters)
         self.name = "Agglomerative"
 

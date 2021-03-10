@@ -1,8 +1,7 @@
 import pandas as pd
 from PCA import PCAAlgorithm
 import GlobalFunctions
-
-class DataSet:
+class Dataset:
     def __init__(self, index: int, csv_seperator: str = ','):
         """
         init method.
