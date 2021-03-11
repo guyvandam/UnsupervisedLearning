@@ -25,3 +25,4 @@ if __name__ == "__main__":
     ds = Dataset2()
     ds.prepareDataset()
     print(ds.get_data_frame())
+    print(ds.get_n_classes())

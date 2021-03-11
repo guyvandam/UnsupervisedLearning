@@ -15,7 +15,7 @@ class Dataset:
         self.index = index
         self.csv_seperator = csv_seperator
         self.csv_file_path = GlobalFunctions.get_dataset_CSV_file_path(self.index)
-        self.n_classes = GlobalFunctions.get_dataset_n_classes(self.index) # number of classes.
+        self.n_classes = 0
         
         self.df = pd.DataFrame()
         self.ground_truth = None
@@ -75,6 +75,8 @@ class Dataset:
         Returns:
             int: n_class - number of classes for the dataset.
         """
+        if self.n_classes == 0:
+            self.n_classes = len(set(self.get_ground_truth()))
         return self.n_classes
 
     def drop_rows_by_non_na_precent(self, non_na_precent):

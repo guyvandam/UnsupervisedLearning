@@ -5,7 +5,7 @@ import numpy as np
 from GMM import GMMAlgorithm
 "https://towardsdatascience.com/understanding-anomaly-detection-in-python-using-gaussian-mixture-model-e26e5d06094b"
 
-def get_anomalous_indices(dataset, anomalous_threshold, random_state=GlobalParameters.randomState):
+def get_anomalous_indices(dataset, anomalous_threshold, random_state=GlobalParameters.random_state):
     
     train_df = dataset.get_data_frame()
 

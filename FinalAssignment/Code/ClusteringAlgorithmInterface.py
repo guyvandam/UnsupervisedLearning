@@ -228,5 +228,6 @@ class ClusteringAlgorithm:
                 anomalous_points_df = temp_anomalous_points_df
             else:
                 anomalous_points_df= pd.concat([anomalous_points_df,temp_anomalous_points_df])
-
+        
         print("anomalous points df \n", anomalous_points_df)
+        # can return the 2 new df's or the indecis of the anomalous_df      

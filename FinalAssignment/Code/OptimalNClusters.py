@@ -95,8 +95,7 @@ class OptimalNClusters:
             sillScoreList = []
             clusterAlgo.setDataFrame(dataset.get_data_frame())
             for nClusters in nClustersRange:
-                print(
-                    f"{clusterAlgo.getName()} Clustering dataset {dataset_index} with {nClusters} Clusters and Random state {randomState}")
+                print(f"{clusterAlgo.getName()} Clustering dataset {dataset_index} with {nClusters} Clusters and Random state {randomState}")
                 clusterAlgo.setNClusters(nClusters)
                 clusterAlgo.createLabels()
                 sillScore = clusterAlgo.getSilhouetteScore()
@@ -106,8 +105,9 @@ class OptimalNClusters:
 
         for name, sillScoreList in algoNameSillScoreDict.items():
             plt.plot(nClustersRange, sillScoreList, 'o-', label=name)
-            algoNameMaxScoreDict[name] = nClustersRange[np.argmax(
-                sillScoreList)]
+            algoNameMaxScoreDict[name] = nClustersRange[np.argmax(sillScoreList)]
+        
+        ############################## plotting.
         plt.legend()
         plt.title(f"Silhouette Score For Data-Set {dataset_index} With Random State {randomState}")
         plt.xlabel("Number Of Clusters")
