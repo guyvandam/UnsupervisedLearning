@@ -26,6 +26,7 @@ class Dataset1(Dataset):
         ################################ extract ground truth column.
         self.ground_truth = self.df.pop(GROUND_TRUTH_COLUMN)
         
+        super()._reduceDimensions()
 
 if __name__ == "__main__":
     ds1 = Dataset1()

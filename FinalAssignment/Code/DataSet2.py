@@ -1,6 +1,6 @@
 from DatasetInterface import Dataset
 
-
+from SpectralClustering import SpectralClusteringAlgorithm
 
 class Dataset2(Dataset):
     
@@ -20,9 +20,14 @@ class Dataset2(Dataset):
 
         ################################ drop rows with nan values
         # self.df.dropna(axis = 1, how = 'any', inplace = True)
+        super()._reduceDimensions()
         
 if __name__ == "__main__":
     ds = Dataset2()
     ds.prepareDataset()
-    print(ds.get_data_frame())
-    print(ds.get_n_classes())
+    # print(ds.get_data_frame())
+    # print(ds.get_n_classes())
+
+    # spec = SpectralClusteringAlgorithm(nClusters = 2, dataFrame = ds.get_data_frame())
+    # spec.createLabels()
+    # print(spec.getLabels())

@@ -1,18 +1,25 @@
-from Code.GlobalFunctions import get_folder_path
+from GlobalFunctions import get_folder_path
 import time
 import os
 import matplotlib.pyplot as plt
 import GlobalParameters
 import ClusteringAlgorithmsImportFile
-from ClusteringAlgorithmsImportFile import clusteringAlgorithmList
 from Dataset1 import Dataset1
 from Dataset2 import Dataset2
-import DataSetsImportFile
-
+from GlobalFunctions import get_results_folder_path, get_dataset_folder_name, get_folder_path, get_file_path
+import GlobalFunctions
 
 class PlotClusters():
 
-    def __init__(self, clusteringAlgorithmList: list = ClusteringAlgorithmsImportFile.clusteringAlgorithmList):
+    def get_plot_file_name(self, random_state):
+        self.file_name= f"ClusteringPlotWithRandomState{random_state}.png"
+        return self.file_name
+    
+    def get_plot_file_path(self, random_state, dataset_index):
+        self.get_plot_file_name(random_state)
+        return GlobalFunctions.get_plot_file_path(self.file_name, dataset_index, GlobalParameters.CLUSTERING_PLOT_FOLDER_NAME)
+
+    def __init__(self, clusteringAlgorithmList: list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list):
         """
 
         Args:
@@ -29,10 +36,10 @@ class PlotClusters():
         """
         dataSet.prepareDataset()
 
-        datasetIndex = dataSet.getDatasetIndex()
-        data = dataSet.getDataFrame()
+        datasetIndex = dataSet.get_index()
+        data = dataSet.get_data_frame()
         algoNameSilhouetteScoreDict = {}
-        randomState = GlobalParameters.randomState
+        randomState = GlobalParameters.random_state
         nrows = 2
         ncols = 3
         fontsize = 20
@@ -45,7 +52,8 @@ class PlotClusters():
 
         for clusterAlgo in self.clusteringAlgorithms:
             clusterAlgo.setDataFrame(data)
-            clusterAlgo.setNClustersDatasetIndex(datasetIndex)
+            # clusterAlgo.setNClustersDatasetIndex(datasetIndex)
+            clusterAlgo.setNClusters(dataSet.get_n_classes())
             algoNameSilhouetteScoreDict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
                 [randomState])[0]  # function gets a list and returns a list.
             labels = clusterAlgo.getLabels()
@@ -64,23 +72,12 @@ class PlotClusters():
         ax[i, j].set_title(f"Silhouette Score", fontsize=fontsize)
 
         # ---------- Save Plot ----------
-        directory = os.path.join(
-            os.getcwd(), f"Results\\Dataset{datasetIndex}\\ClusteringPlot")
-        try:
-            os.makedirs(directory)
-        except FileExistsError:
-            pass
-        plt.savefig(
-            directory + f"\\ClusteringPlotWithRandomState{randomState}.png")
+        plot_file_path = self.get_plot_file_path(randomState, datasetIndex)
+        plt.savefig(plot_file_path)
         plt.close()
 
-def get_clustering_plot_file_path(dataset_index):
-    clustering_plot_folder_name = "ClusteringPlot"
-    results_folder_path = GlobalFunctions.get_results_folder_path()
-
-    file_path = get_folder_path(clustering_plot_folder_name, results_folder_path)
-
 # Due to some memory interference issues with saving the figure and acessing the CSV file for loading the data, this function can't loop over the datasets and save their figures in one run.
-plotClusters = PlotClusters()
-# plotClusters.plotAndSaveOne(DataSet1())
-# plotClusters.plotAndSaveOne(DataSet2())
+if __name__ == '__main__':
+    plotClusters = PlotClusters()
+    # plotClusters.plotAndSaveOne(Dataset1())
+    plotClusters.plotAndSaveOne(Dataset2())

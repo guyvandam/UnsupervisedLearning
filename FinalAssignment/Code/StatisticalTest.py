@@ -4,14 +4,22 @@ import numpy as np
 import pandas as pd
 from scipy.stats import ttest_ind
 
-import ClusteringAlgorithms
-import DataSets
+import ClusteringAlgorithmsImportFile
+import DatasetsImportFile
 import GlobalParameters
+import GlobalFunctions
 
+def get_csv_file_name(num_random_stats):
+    file_name = f"StatisticalTestWith{num_random_stats}RandomStates.csv"
+    return file_name
+
+def get_csv_file_path(num_random_states, dataset_index):
+    file_name = get_csv_file_name(num_random_states)
+    return GlobalFunctions.get_plot_file_path(file_name, dataset_index, GlobalParameters.STATISTICAL_TEST_FOLDER_NAME)
 
 class StatisticalTest():
     def __init__(self, randomStateList: list = GlobalParameters.randomStateList,
-                 clusteringAlgorithmList: list = ClusteringAlgorithms.clusteringAlgorithmList):
+                 clusteringAlgorithmList: list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list):
         """
         init method.
 
@@ -24,6 +32,10 @@ class StatisticalTest():
 
         self.result = {}
 
+
+    
+
+  
     def createCSV(self, dataSet):
         """
         We perfrom the statistical test seeing in the paper. essentially finding the maximum with our newley defined order.
@@ -33,11 +45,12 @@ class StatisticalTest():
             dataSet (DataSet object): data-set we want to check the fitment between external labels and prediction labels.
         """
         dataSet.prepareDataset()
+        dataset_index = dataSet.get_index()
 
         for clusterAlgorithm in self.clusteringAlgorithmList:
-            clusterAlgorithm.setDataFrame(dataSet.getDataFrame())
-            clusterAlgorithm.setNClustersDatasetIndex(
-                dataSet.getDatasetIndex())
+            clusterAlgorithm.setDataFrame(dataSet.get_data_frame())
+            # clusterAlgorithm.setNClustersDatasetIndex(dataSet.getDatasetIndex()
+            clusterAlgorithm.setNClusters(dataSet.get_n_classes())
 
         winner = self.clusteringAlgorithmList[0]
         winnerSilhouetteList = winner.getSilhouetteScoreList(
@@ -71,16 +84,10 @@ class StatisticalTest():
 
         self.result = pd.DataFrame(self.result)
         print(self.result)
-        directory = os.path.join(
-            os.getcwd(), f"Results\\Dataset{dataSet.getDatasetIndex()}\\StatisticalTest")
-        try:
-            os.makedirs(directory)
-        except FileExistsError:
-            pass
-        self.result.to_csv(
-            directory + f"\\StatisticalTestWith{len(self.randomStateList)}RandomStates.csv")
+        csv_file_path = get_csv_file_path(len(self.randomStateList), dataset_index)
+        self.result.to_csv(csv_file_path)
 
 
-for ds in DataSets.dataSetList:
+for ds in DatasetsImportFile.dataset_obj_list:
     ST = StatisticalTest()
     ST.createCSV(ds)

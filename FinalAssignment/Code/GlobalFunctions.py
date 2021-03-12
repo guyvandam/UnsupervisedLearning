@@ -36,3 +36,12 @@ def get_dataset_CSV_file_path(index):
 
 def get_dataset_n_classes(index):
     return GlobalParameters.DATASETS_NUMBER_OF_CLASSES_DICT[index]
+
+def get_plot_file_path(file_name, dataset_index, parent_folder_name):
+    results_folder_path = get_results_folder_path()
+    parent_folder_path = get_folder_path(folder_name = parent_folder_name, enclosing_path = results_folder_path)
+    dataset_folder_name = get_dataset_folder_name(dataset_index)
+    dataset_folder_path = get_folder_path(dataset_folder_name, enclosing_path = parent_folder_path)
+
+    plot_file_path = get_file_path(file_name, dataset_folder_path)
+    return plot_file_path
