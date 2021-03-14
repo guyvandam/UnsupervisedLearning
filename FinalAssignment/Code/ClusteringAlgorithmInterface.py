@@ -199,7 +199,7 @@ class ClusteringAlgorithm:
             print(f"Random State Doesn't make a change for {self.getName()}")
         return silhouetteList
 
-    def get_anomalous_indices_silhouette_coefficients(self, dataset):
+    def get_anomalous_dataframe_negative_silhouette_coefficients(self, dataset):
         
         anomalous_points_df = pd.DataFrame()
         dataset_df = dataset.get_data_frame().copy()
@@ -229,5 +229,6 @@ class ClusteringAlgorithm:
             else:
                 anomalous_points_df= pd.concat([anomalous_points_df,temp_anomalous_points_df])
         
-        print("anomalous points df \n", anomalous_points_df)
+        # print("anomalous points df \n", anomalous_points_df)
+        return anomalous_points_df, dataset_df
         # can return the 2 new df's or the indecis of the anomalous_df      

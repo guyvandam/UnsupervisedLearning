@@ -1,7 +1,9 @@
 from GlobalFunctions import get_folder_path
 import time
 import os
+import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import GlobalParameters
 import ClusteringAlgorithmsImportFile
 from Dataset1 import Dataset1
@@ -26,6 +28,8 @@ class PlotClusters():
             clusteringAlgorithmList (list, optional): Plot the data using these clustering algorithms. Defaults to ClusteringAlgorithms.clusteringAlgorithmList.
         """
         self.clusteringAlgorithms = clusteringAlgorithmList
+        self.is_remove_outliers = True
+        self.is_DBSCAN = True
 
     def plotAndSaveOne(self, dataSet):
         """
@@ -39,6 +43,7 @@ class PlotClusters():
         datasetIndex = dataSet.get_index()
         data = dataSet.get_data_frame()
         algoNameSilhouetteScoreDict = {}
+        algoNameSilhouetteScore_after_remove_outliers_dict = {}
         randomState = GlobalParameters.random_state
         nrows = 2
         ncols = 3
@@ -50,14 +55,26 @@ class PlotClusters():
         i = 0
         j = 0
 
-        for clusterAlgo in self.clusteringAlgorithms:
+        for clusterAlgo in self.clusteringAlgorithms[0:3]:
             clusterAlgo.setDataFrame(data)
             # clusterAlgo.setNClustersDatasetIndex(datasetIndex)
             clusterAlgo.setNClusters(dataSet.get_n_classes())
             algoNameSilhouetteScoreDict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
                 [randomState])[0]  # function gets a list and returns a list.
             labels = clusterAlgo.getLabels()
+            
             ax[i, j].scatter(data['dim1'], data['dim2'], c=labels)
+            if self.is_remove_outliers:
+                # anomalous_points_df, regular_points_df = clusterAlgo.get_anomalous_dataframe_negative_silhouette_coefficients(dataSet)
+                # clusterAlgo.setDataFrame(regular_points_df)
+
+                # algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
+                # [randomState])[0]
+                
+                # ax[i, j].scatter(anomalous_points_df['dim1'], anomalous_points_df['dim2'], c='black')
+            
+                algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = 0.3
+
             ax[i, j].set_title(
                 f"{clusterAlgo.name} With {clusterAlgo.getNClusters()} Clusters", fontsize=fontsize)
 
@@ -67,9 +84,19 @@ class PlotClusters():
                 i += 1
 
         # ---------- bar plot for silhouette score ----------
-        ax[i, j].bar(list(algoNameSilhouetteScoreDict.keys()),
-                     algoNameSilhouetteScoreDict.values())
+        labels = algoNameSilhouetteScoreDict.keys()
+        x = np.arange(len(labels))
+        width = 0.3
+        if self.is_remove_outliers:
+            ax[i, j].bar(x - width/2, algoNameSilhouetteScoreDict.values(), width=width, color='black', label='All Data')
+            ax[i, j].bar(x + width/2, algoNameSilhouetteScore_after_remove_outliers_dict.values(), width=width, label = 'Data With Anomalous Points Removed')
+            ax[i, j].set_xticks(x)
+            ax[i, j].set_xticklabels(labels)
+            ax[i, j].legend()
+        else:
+            ax[i, j].bar(x, algoNameSilhouetteScoreDict.values())
         ax[i, j].set_title(f"Silhouette Score", fontsize=fontsize)
+        
 
         # ---------- Save Plot ----------
         plot_file_path = self.get_plot_file_path(randomState, datasetIndex)
