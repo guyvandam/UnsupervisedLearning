@@ -22,7 +22,6 @@ def get_csv_file_name(min_n_clusters, max_n_clusters, random_state_list_length):
 
 def get_optimal_n_clusters_file_path(file_name, dataset_index):
     
-
     results_folder_path = get_results_folder_path()
     optimal_n_clusters_folder_path = get_folder_path(folder_name = GlobalParameters.OPTIMAL_N_CLUSTERS_FOLDER_NAME, enclosing_path = results_folder_path)
     dataset_folder_name = get_dataset_folder_name(dataset_index)
@@ -31,15 +30,28 @@ def get_optimal_n_clusters_file_path(file_name, dataset_index):
     plot_file_path = get_file_path(file_name, dataset_folder_path)
     return plot_file_path
 
+def sample_and_popluation_mean_test(samples):
+        pop_mean = np.mean(samples)
+        
+        # H0 - sample mean = population mean.
+        p_value, stat = stats.ttest_1samp(samples, pop_mean)
+
+        # print("p value:", p_value, "stat:", stat)
+        return p_value, stat, pop_mean
+
 class OptimalNClusters:
-    def __init__(self, clusteringAlgorithmList: list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list):
+    def __init__(self, dataset, min_n_clusters, max_n_clusters, clusteringAlgorithmList: list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list):
         """
         init method.
 
         Args:
             clusteringAlgorithmList (list, optional): list of ClusteringAlgorithm objects for us to get the optimal NClusters of. Defaults to ClusteringAlgorithms.clusteringAlgorithmList.
         """
-        self.clusteringAlgorithmList = clusteringAlgorithmList
+        self.dataset = dataset
+        self.min_n_clusters = min_n_clusters
+        self.max_n_clusters = max_n_clusters
+        self.random_state_list = GlobalParameters.random_state_list[:2]
+        self.clusteringAlgorithmList = clusteringAlgorithmList[0:2]
 
     def runRandomStates(self, dataset, min_n_clusters: int, maxNClusters: int, randomStateList: list):
         """
@@ -123,37 +135,94 @@ class OptimalNClusters:
         plt.close()
         return algoNameMaxScoreDict
 
+    def run_all(self):
+        # result_df = pd.DataFrame()
+        # algo_name_sil_score_dict = {}
+        n_clusters_range = range(self.min_n_clusters, self.max_n_clusters + 1)
 
-    def run_stat_test(self, clusterAlgo, dataset, n_classes, random_state_list):
-        dataset_df = dataset.get_data_frame()
+        dataset_index = self.dataset.get_index()
+        num_random_states = len(self.random_state_list)
+
+        for cluster_algo_obj in self.clusteringAlgorithmList:
+            temp_df = self.run_n_clusters_on_cluster_algo(cluster_algo_obj)
+
+            mean_sil_score_list = list(temp_df.loc['Mean'])
+            plt.plot(n_clusters_range, mean_sil_score_list, 'o-', label=cluster_algo_obj.getName())
+
+        ############################## plotting.
+        plt.legend()
+        plt.title(f"Silhouette Score Average Across {num_random_states} Random States For Data-Set {dataset_index}")
+        plt.xlabel("Number Of Clusters")
+        plt.ylabel("Average Silhouette Score")
+
+        # ---------- Save Plot ----------
+        file_name = f"{self.min_n_clusters}-{self.max_n_clusters}ClusterRange{num_random_states}RandomStatesPlot"
+        file_path = get_optimal_n_clusters_file_path(file_name=file_name, dataset_index=dataset_index)
+        
+        plt.savefig(file_path)
+        plt.close()
+        
+
+    def run_n_clusters_on_cluster_algo(self, cluster_algo_obj):
+        random_state_sil_score_df = pd.DataFrame()
+
+        for n_classes in range(self.min_n_clusters, self.max_n_clusters + 1):
+            temp_df = self.get_silhouetter_score_df(cluster_algo_obj, n_classes)
+
+            if random_state_sil_score_df.empty:
+                random_state_sil_score_df = temp_df
+            else:
+                random_state_sil_score_df = pd.concat([random_state_sil_score_df, temp_df], axis = 1)
+        
+        df_to_save = random_state_sil_score_df.copy()
+        maxList = df_to_save.idxmax(axis=1)
+        df_to_save['max_value_n_clusters'] = maxList
+
+        ##################################### save results
+        file_name = f"{self.min_n_clusters}-{self.max_n_clusters}ClusterRange{len(self.random_state_list)}RandomStates{cluster_algo_obj.getName()}.csv"
+        csv_file_path = get_optimal_n_clusters_file_path(file_name, self.dataset.get_index())
+        df_to_save.to_csv(csv_file_path)
+
+        return random_state_sil_score_df
+
+    def get_silhouetter_score_df(self, clusterAlgo, n_classes):
+        dataset_df = self.dataset.get_data_frame()
         clusterAlgo.setNClusters(n_classes)
         clusterAlgo.setDataFrame(dataset_df)
 
         silhouette_score_list = []
-        for random_state in random_state_list:
-            print(clusterAlgo.getName(), "with", n_classes, "and random state", random_state)
+
+
+        for random_state in self.random_state_list:
+            print(clusterAlgo.getName(), "with", n_classes, "clusters and random state", random_state)
             clusterAlgo.setRandomState(random_state)
             clusterAlgo.createLabels()
             temp_sil_score = clusterAlgo.getSilhouetteScore()
             silhouette_score_list.append(temp_sil_score)
 
-        pop_mean = np.mean(silhouette_score_list)
-        
-        # H0 - sample mean = population mean.
-        p_value, stat = stats.ttest_1samp(silhouette_score_list, pop_mean)
+        result_df = pd.DataFrame(silhouette_score_list, index=self.random_state_list).T
 
-        print("p value:", p_value, "stat:", stat)
+        p_value, stat, mean = sample_and_popluation_mean_test(silhouette_score_list)
+        result_df['Mean'] = mean
+        result_df['P-Value'] = p_value            
+        result_df['T-Statistics'] = stat
+
+        result_df = result_df.T
+        result_df.rename(columns = {0 : n_classes}, inplace = True)
+        
+        return result_df        
     
 if __name__ == "__main__":
-    # 10 most comman random seeds.
-    # randomStateList = [0, 1, 42, 1234, 10, 123, 2, 5, 12, 12345]
-
-    onc = OptimalNClusters()
 
     ################### try 3 more clusters.
-    num_n_clusters_tries = 3
+    num_n_clusters_tries = 1
     for ds in DatasetsImportFile.dataset_obj_list[1:2]:
         ds.prepareDataset()
         num_classes = ds.get_n_classes()
-        onc.run_stat_test(clustering_algorithm_obj_list[0], ds, num_classes+1, random_state_list)
+        
+        onc = OptimalNClusters(ds, num_classes, num_classes + num_n_clusters_tries)
+        
+        # onc.run_stat_test(clustering_algorithm_obj_list[0], num_classes+1)
+        # onc.run_n_clusters_on_cluster_algo(clustering_algorithm_obj_list[0])
+        onc.run_all()
         # onc.runRandomStates(ds, num_classes, (num_classes + num_n_clusters_tries), random_state_list[0:3])

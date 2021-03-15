@@ -25,7 +25,7 @@ class FitExternalClass:
             randomStateList (list, optional): list of random states. Defaults to GlobalParameters.randomStateList.
             clusteringAlgorithmList (list, optional): list of Clustering Algorithm Objects. Defaults to ClusteringAlgorithms.clusteringAlgorithmList.
         """
-        self.clusteringAlgorithmList = clusteringAlgorithmList
+        self.clusteringAlgorithmList = clusteringAlgorithmList[0:1]
         self.randomStateList = randomStateList
 
     def get_csv_file_name(self):
@@ -47,7 +47,7 @@ class FitExternalClass:
 
     def createCSV(self, dataset):
         """
-        For each of the external classifier labels and each of the clustering algorithms we save the fitment score in a dictionary using the checkAgainstExternalClass() mehtod of the ClusteringAlgorithm object.
+        For each of the external classifier labels and each of the clustering algorithms we save the fitment score in a dictionary using the checkAgainstExternalClassRandomStateList() mehtod of the ClusteringAlgorithm object.
         This dictionary later transforms into a dataframe that can easily be saved in a CSV file, using pandas to_csv() mehtod.
         We also save a plot of the results.
 
@@ -62,7 +62,7 @@ class FitExternalClass:
         for clusteringAlgorithm in self.clusteringAlgorithmList:
             clusteringAlgorithm.setDataFrame(dataset.get_data_frame())
             print(clusteringAlgorithm.getName())
-            result[clusteringAlgorithm.getName()] = clusteringAlgorithm.checkAgainstExternalClass(self.randomStateList, dataset.get_ground_truth())
+            result[clusteringAlgorithm.getName()] = clusteringAlgorithm.checkAgainstExternalClassRandomStateList(self.randomStateList, dataset.get_ground_truth())
 
         # ---------- Results into a DataFrame and add min and max columns ----------
         resultDF = pd.DataFrame(result)
@@ -78,11 +78,17 @@ class FitExternalClass:
         # ---------- Save bar plot ----------
         algoNameAverageFitDict = {name: fitmentDict['Average'] for name, fitmentDict in result.items()}
         fig, ax = plt.subplots(figsize=(10, 8))
+        
+        ############################# sort bars.
+        algoNameAverageFitDict = dict(sorted(algoNameAverageFitDict.items(), key=lambda item: item[1]))
+
         ax.bar(list(algoNameAverageFitDict.keys()),
                 algoNameAverageFitDict.values())
+         
         fig.suptitle(
-            f"Average Of Kullback-Leibler Divergence Between Prediction Labels And External \n External Classifier With {self.nClusters} Clusters For Data-Set {dataset_index} Across {len(self.randomStateList)} Random States")
-        
+            # f"Sorted Average Of Kullback-Leibler Divergence Between \n Prediction Labels And External Classifier With {self.nClusters} Clusters For \n Data-Set {dataset_index} Across {len(self.randomStateList)} Random States", fontsize = 17)            f"Sorted Average Of Kullback-Leibler Divergence Between \n Prediction Labels And External Classifier With {self.nClusters} Clusters For \n Data-Set {dataset_index} Across {len(self.randomStateList)} Random States", fontsize = 17)
+            f"Sorted Average Of Kullback-Leibler Divergence Between Prediction Labels And \n External Classifier With {self.nClusters} Clusters For Data-Set {dataset_index} Across {len(self.randomStateList)} Random States", fontsize = 18)
+
         bar_chart_file_path = self.get_bar_chart_fie_path(dataset_index)
         fig.savefig(bar_chart_file_path)
         plt.close()
@@ -92,4 +98,4 @@ class FitExternalClass:
 if __name__ == '__main__':
     fec = FitExternalClass()
     fec.createCSV(Dataset1())
-    # fec.createCSV(DataSet2())
+    # fec.createCSV(Dataset2())

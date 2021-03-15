@@ -1,5 +1,8 @@
 import GlobalParameters
 import os
+import numpy as np
+from scipy import stats
+
 
 def get_file_path(file_name, folder_path):
     file_path = os.path.join(folder_path, file_name)
@@ -45,3 +48,12 @@ def get_plot_file_path(file_name, dataset_index, parent_folder_name):
 
     plot_file_path = get_file_path(file_name, dataset_folder_path)
     return plot_file_path
+
+def get_sample_and_popluation_mean_test(samples):
+        pop_mean = np.mean(samples)
+        
+        # H0 - sample mean = population mean.
+        p_value, stat = stats.ttest_1samp(samples, pop_mean)
+
+        # print("p value:", p_value, "stat:", stat)
+        return p_value, stat

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import entropy
 from sklearn.metrics import silhouette_score, silhouette_samples
-
+from GlobalFunctions import get_sample_and_popluation_mean_test
 
 def getProbabilities(lst: list) -> np.ndarray:
     """
@@ -146,7 +146,17 @@ class ClusteringAlgorithm:
         self.__init__(nClusters=self.nClusters,
                       randomState=randomState, dataFrame=self.dataFrame)
 
-    def checkAgainstExternalClass(self, randomStateList: list, externalLabels: list) -> dict:
+    def check_against_external_class(self, random_state, external_labels):
+        n_classes = len(set(external_labels))
+        self.setNClusters(n_classes)
+        
+        self.setRandomState(random_state)
+        self.createLabels
+        kl_divergence_value = self.getKLDivergence(external_labels)
+
+        return kl_divergence_value
+
+    def checkAgainstExternalClassRandomStateList(self, randomStateList: list, externalLabels: list) -> dict:
         """
         calculate fitment to external classifier using K-L divergence, with a list of different random states.
         Args:
@@ -159,14 +169,23 @@ class ClusteringAlgorithm:
         randomStateKLDivergenceDict = {}  # key - randoom state, value mutual info score.
         nClusters = len(set(externalLabels))
         self.setNClusters(nClusters)
+        kl_divergence_list = []
         for randomState in randomStateList:
             self.setRandomState(randomState)
             self.createLabels()
+            kl_divergence_value = self.getKLDivergence(externalLabels)
             randomStateKLDivergenceDict[str(
-                randomState)] = self.getKLDivergence(externalLabels)
+                randomState)] = kl_divergence_value
+            kl_divergence_list.append(kl_divergence_value)
 
         randomStateKLDivergenceDict['Average'] = np.mean(
             list(randomStateKLDivergenceDict.values()))
+
+        ####################################### run statistical test
+        p_value, stat = get_sample_and_popluation_mean_test(kl_divergence_list)
+
+        randomStateKLDivergenceDict['P-Value'] = p_value
+        randomStateKLDivergenceDict['T-Statistics'] = stat
         if len(set(randomStateKLDivergenceDict.values())) == 1 and not len(randomStateList) == 1:
             print(f"Random State Doesn't make a change for {self.name}")
         return randomStateKLDivergenceDict
