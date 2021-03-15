@@ -1,6 +1,6 @@
 import os
 from collections import Counter
-
+from typing import Tuple
 import numpy as np
 import pandas as pd
 from scipy.stats import entropy
@@ -87,7 +87,7 @@ class ClusteringAlgorithm:
         """
         return self.nClusters
 
-    def getName(self) -> str:
+    def get_name(self) -> str:
         """
 
         Returns:
@@ -218,7 +218,7 @@ class ClusteringAlgorithm:
             print(f"Random State Doesn't make a change for {self.getName()}")
         return silhouetteList
 
-    def get_anomalous_dataframe_negative_silhouette_coefficients(self, dataset):
+    def get_anomalous_dataframe_negative_silhouette_coefficients(self, dataset) -> Tuple[pd.DataFrame, pd.DataFrame]:
         
         anomalous_points_df = pd.DataFrame()
         dataset_df = dataset.get_data_frame().copy()

@@ -70,7 +70,7 @@ class Dataset:
         """
         return self.index
 
-    def get_n_classes(self) -> int:
+    def get_n_clusters(self) -> int:
         """
         Returns:
             int: n_class - number of classes for the dataset.
@@ -86,3 +86,5 @@ class Dataset:
         non_na_number_rows = int(num_columns * precent_fraction)
         self.df.dropna(axis = 0, thresh = int(non_na_number_rows), inplace = True)
 
+    def set_dataframe(self, df):
+        self.df = df

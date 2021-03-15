@@ -43,7 +43,7 @@ class PlotClusters():
         datasetIndex = dataSet.get_index()
         data = dataSet.get_data_frame()
         algoNameSilhouetteScoreDict = {}
-        algoNameSilhouetteScore_after_remove_outliers_dict = {}
+        clean_data_algo_name_sil_score_dict = {}
         randomState = GlobalParameters.random_state
         nrows = 2
         ncols = 3
@@ -58,7 +58,7 @@ class PlotClusters():
         for clusterAlgo in self.clusteringAlgorithms[0:3]:
             clusterAlgo.setDataFrame(data)
             # clusterAlgo.setNClustersDatasetIndex(datasetIndex)
-            clusterAlgo.setNClusters(dataSet.get_n_classes())
+            clusterAlgo.setNClusters(dataSet.get_n_clusters())
             algoNameSilhouetteScoreDict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
                 [randomState])[0]  # function gets a list and returns a list.
             labels = clusterAlgo.getLabels()
@@ -68,12 +68,12 @@ class PlotClusters():
                 anomalous_points_df, regular_points_df = clusterAlgo.get_anomalous_dataframe_negative_silhouette_coefficients(dataSet)
                 clusterAlgo.setDataFrame(regular_points_df)
 
-                algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
+                clean_data_algo_name_sil_score_dict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
                 [randomState])[0]
                 
                 ax[i, j].scatter(anomalous_points_df['dim1'], anomalous_points_df['dim2'], c='black')
             
-                algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = 0.3
+                clean_data_algo_name_sil_score_dict[clusterAlgo.name] = 0.3
 
             ax[i, j].set_title(
                 f"{clusterAlgo.name} With {clusterAlgo.getNClusters()} Clusters", fontsize=fontsize)
@@ -89,7 +89,7 @@ class PlotClusters():
         width = 0.3
         if self.is_remove_outliers:
             ax[i, j].bar(x - width/2, algoNameSilhouetteScoreDict.values(), width=width, color='black', label='All Data')
-            ax[i, j].bar(x + width/2, algoNameSilhouetteScore_after_remove_outliers_dict.values(), width=width, label = 'Data With Anomalous Points Removed')
+            ax[i, j].bar(x + width/2, clean_data_algo_name_sil_score_dict.values(), width=width, label = 'Data With Anomalous Points Removed')
             ax[i, j].set_xticks(x)
             ax[i, j].set_xticklabels(labels)
             ax[i, j].legend()

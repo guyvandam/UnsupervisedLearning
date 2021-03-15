@@ -3,6 +3,7 @@ from statistics import mode
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import os
 
 import DatasetsImportFile
 import ClusteringAlgorithmsImportFile
@@ -51,7 +52,7 @@ class OptimalNClusters:
         self.min_n_clusters = min_n_clusters
         self.max_n_clusters = max_n_clusters
         self.random_state_list = GlobalParameters.random_state_list[:2]
-        self.clusteringAlgorithmList = clusteringAlgorithmList[0:2]
+        self.clusteringAlgorithmList = clusteringAlgorithmList[:2]
 
     def runRandomStates(self, dataset, min_n_clusters: int, maxNClusters: int, randomStateList: list):
         """
@@ -109,13 +110,13 @@ class OptimalNClusters:
             sillScoreList = []
             clusterAlgo.setDataFrame(dataset.get_data_frame())
             for nClusters in nClustersRange:
-                print(f"{clusterAlgo.getName()} Clustering dataset {dataset_index} with {nClusters} Clusters and Random state {randomState}")
+                print(f"{clusterAlgo.get_name()} Clustering dataset {dataset_index} with {nClusters} Clusters and Random state {randomState}")
                 clusterAlgo.setNClusters(nClusters)
                 clusterAlgo.createLabels()
                 sillScore = clusterAlgo.getSilhouetteScore()
                 sillScoreList.append(sillScore)
 
-            algoNameSillScoreDict[clusterAlgo.getName()] = sillScoreList
+            algoNameSillScoreDict[clusterAlgo.get_name()] = sillScoreList
 
         for name, sillScoreList in algoNameSillScoreDict.items():
             plt.plot(nClustersRange, sillScoreList, 'o-', label=name)
@@ -147,7 +148,7 @@ class OptimalNClusters:
             temp_df = self.run_n_clusters_on_cluster_algo(cluster_algo_obj)
 
             mean_sil_score_list = list(temp_df.loc['Mean'])
-            plt.plot(n_clusters_range, mean_sil_score_list, 'o-', label=cluster_algo_obj.getName())
+            plt.plot(n_clusters_range, mean_sil_score_list, 'o-', label=cluster_algo_obj.get_name())
 
         ############################## plotting.
         plt.legend()
@@ -162,7 +163,11 @@ class OptimalNClusters:
         plt.savefig(file_path)
         plt.close()
         
-
+    def get_cluster_algo_csv_file_path(self, algo_name):
+        file_name = f"{self.min_n_clusters}-{self.max_n_clusters}ClusterRange{len(self.random_state_list)}RandomStates{algo_name}.csv"
+        csv_file_path = get_optimal_n_clusters_file_path(file_name, self.dataset.get_index())
+        return csv_file_path
+    
     def run_n_clusters_on_cluster_algo(self, cluster_algo_obj):
         random_state_sil_score_df = pd.DataFrame()
 
@@ -179,22 +184,21 @@ class OptimalNClusters:
         df_to_save['max_value_n_clusters'] = maxList
 
         ##################################### save results
-        file_name = f"{self.min_n_clusters}-{self.max_n_clusters}ClusterRange{len(self.random_state_list)}RandomStates{cluster_algo_obj.getName()}.csv"
-        csv_file_path = get_optimal_n_clusters_file_path(file_name, self.dataset.get_index())
+        csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
         df_to_save.to_csv(csv_file_path)
 
         return random_state_sil_score_df
 
-    def get_silhouetter_score_df(self, clusterAlgo, n_classes):
+    def get_silhouetter_score_df(self, clusterAlgo, n_clusters):
         dataset_df = self.dataset.get_data_frame()
-        clusterAlgo.setNClusters(n_classes)
+        clusterAlgo.setNClusters(n_clusters)
         clusterAlgo.setDataFrame(dataset_df)
 
         silhouette_score_list = []
 
 
         for random_state in self.random_state_list:
-            print(clusterAlgo.getName(), "with", n_classes, "clusters and random state", random_state)
+            print(clusterAlgo.get_name(), "with", n_clusters, "clusters and random state", random_state)
             clusterAlgo.setRandomState(random_state)
             clusterAlgo.createLabels()
             temp_sil_score = clusterAlgo.getSilhouetteScore()
@@ -208,21 +212,47 @@ class OptimalNClusters:
         result_df['T-Statistics'] = stat
 
         result_df = result_df.T
-        result_df.rename(columns = {0 : n_classes}, inplace = True)
+        result_df.rename(columns = {0 : n_clusters}, inplace = True)
         
         return result_df        
     
+
+    def run_anomaly(self):
+        n_clusters = self.dataset.get_n_clusters()
+        result_df = pd.DataFrame()
+        for cluster_algo_obj in self.clusteringAlgorithmList:
+            csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
+            if os.path.isfile(csv_file_path):
+                print("reading from memory")
+                all_data_sil_score_df = pd.read_csv(csv_file_path)[str(n_clusters)]
+            else:
+                all_data_sil_score_df = self.get_silhouetter_score_df(cluster_algo_obj, n_clusters)
+
+            _, clean_data_df = cluster_algo_obj.get_anomalous_dataframe_negative_silhouette_coefficients(self.dataset)
+            self.dataset.set_dataframe(clean_data_df)
+
+            clean_data_sil_score_df = self.get_silhouetter_score_df(cluster_algo_obj, n_clusters)
+
+            temp_diff_sil_score_df = clean_data_sil_score_df - all_data_sil_score_df
+            print(cluster_algo_obj.get_name(), temp_diff_sil_score_df)
+            if result_df.empty:
+                result_df = temp_diff_sil_score_df
+            else:
+                result_df = pd.concat([result_df, temp_diff_sil_score_df], axis = 1)
+        print(result_df)
+
 if __name__ == "__main__":
 
     ################### try 3 more clusters.
     num_n_clusters_tries = 1
     for ds in DatasetsImportFile.dataset_obj_list[1:2]:
         ds.prepareDataset()
-        num_classes = ds.get_n_classes()
+        num_classes = ds.get_n_clusters()
         
         onc = OptimalNClusters(ds, num_classes, num_classes + num_n_clusters_tries)
         
         # onc.run_stat_test(clustering_algorithm_obj_list[0], num_classes+1)
         # onc.run_n_clusters_on_cluster_algo(clustering_algorithm_obj_list[0])
-        onc.run_all()
+        # onc.run_all()
+        onc.run_anomaly()
         # onc.runRandomStates(ds, num_classes, (num_classes + num_n_clusters_tries), random_state_list[0:3])
