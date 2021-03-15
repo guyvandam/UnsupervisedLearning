@@ -65,13 +65,13 @@ class PlotClusters():
             
             ax[i, j].scatter(data['dim1'], data['dim2'], c=labels)
             if self.is_remove_outliers:
-                # anomalous_points_df, regular_points_df = clusterAlgo.get_anomalous_dataframe_negative_silhouette_coefficients(dataSet)
-                # clusterAlgo.setDataFrame(regular_points_df)
+                anomalous_points_df, regular_points_df = clusterAlgo.get_anomalous_dataframe_negative_silhouette_coefficients(dataSet)
+                clusterAlgo.setDataFrame(regular_points_df)
 
-                # algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
-                # [randomState])[0]
+                algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = clusterAlgo.getSilhouetteScoreList(
+                [randomState])[0]
                 
-                # ax[i, j].scatter(anomalous_points_df['dim1'], anomalous_points_df['dim2'], c='black')
+                ax[i, j].scatter(anomalous_points_df['dim1'], anomalous_points_df['dim2'], c='black')
             
                 algoNameSilhouetteScore_after_remove_outliers_dict[clusterAlgo.name] = 0.3
 

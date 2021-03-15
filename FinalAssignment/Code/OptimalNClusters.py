@@ -8,6 +8,9 @@ import DatasetsImportFile
 import ClusteringAlgorithmsImportFile
 import GlobalParameters
 from GlobalFunctions import get_results_folder_path, get_dataset_folder_name, get_folder_path, get_file_path
+from GlobalParameters import random_state_list
+from ClusteringAlgorithmsImportFile import clustering_algorithm_obj_list
+from scipy import stats
 
 def get_plot_file_name(random_state):
     file_name = f"RandomState{random_state}.png"
@@ -69,7 +72,6 @@ class OptimalNClusters:
         
         resultDf.to_csv(file_path)
 
-
     def optimalNClusters(self, dataset, minNClusters: int, maxNClusters: int, randomState: int) -> dict:
         """
         Calculate the optimal number of clusters for the dataset, with the input random state for each algorithm by taking the NClusters with the highest Silhouette score.
@@ -91,7 +93,7 @@ class OptimalNClusters:
         nClustersRange = range(minNClusters, maxNClusters + 1)
         dataset_index = dataset.get_index()
         
-        for clusterAlgo in self.clusteringAlgorithmList:
+        for clusterAlgo in self.clusteringAlgorithmList[0:1]:
             sillScoreList = []
             clusterAlgo.setDataFrame(dataset.get_data_frame())
             for nClusters in nClustersRange:
@@ -121,9 +123,30 @@ class OptimalNClusters:
         plt.close()
         return algoNameMaxScoreDict
 
+
+    def run_stat_test(self, clusterAlgo, dataset, n_classes, random_state_list):
+        dataset_df = dataset.get_data_frame()
+        clusterAlgo.setNClusters(n_classes)
+        clusterAlgo.setDataFrame(dataset_df)
+
+        silhouette_score_list = []
+        for random_state in random_state_list:
+            print(clusterAlgo.getName(), "with", n_classes, "and random state", random_state)
+            clusterAlgo.setRandomState(random_state)
+            clusterAlgo.createLabels()
+            temp_sil_score = clusterAlgo.getSilhouetteScore()
+            silhouette_score_list.append(temp_sil_score)
+
+        pop_mean = np.mean(silhouette_score_list)
+        
+        # H0 - sample mean = population mean.
+        p_value, stat = stats.ttest_1samp(silhouette_score_list, pop_mean)
+
+        print("p value:", p_value, "stat:", stat)
+    
 if __name__ == "__main__":
     # 10 most comman random seeds.
-    randomStateList = [0, 1, 42, 1234, 10, 123, 2, 5, 12, 12345]
+    # randomStateList = [0, 1, 42, 1234, 10, 123, 2, 5, 12, 12345]
 
     onc = OptimalNClusters()
 
@@ -132,4 +155,5 @@ if __name__ == "__main__":
     for ds in DatasetsImportFile.dataset_obj_list[1:2]:
         ds.prepareDataset()
         num_classes = ds.get_n_classes()
-        onc.runRandomStates(ds, num_classes, (num_classes + num_n_clusters_tries), randomStateList)
+        onc.run_stat_test(clustering_algorithm_obj_list[0], ds, num_classes+1, random_state_list)
+        # onc.runRandomStates(ds, num_classes, (num_classes + num_n_clusters_tries), random_state_list[0:3])
