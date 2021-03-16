@@ -8,11 +8,11 @@ import os
 import DatasetsImportFile
 import ClusteringAlgorithmsImportFile
 import GlobalParameters
-from GlobalFunctions import get_results_folder_path, get_dataset_folder_name, get_folder_path, get_file_path
+from GlobalFunctions import get_results_folder_path, get_dataset_folder_name, get_folder_path, get_file_path, get_df_by_path
 from GlobalParameters import random_state_list
 from ClusteringAlgorithmsImportFile import clustering_algorithm_obj_list
 from scipy import stats
-
+from StatisticalTestC import sort_df_by_stat_test
 def get_plot_file_name(random_state):
     file_name = f"RandomState{random_state}.png"
     return file_name
@@ -33,13 +33,37 @@ def get_optimal_n_clusters_file_path(file_name, dataset_index):
 
 def sample_and_popluation_mean_test(samples):
         pop_mean = np.mean(samples)
-        
+
         # H0 - sample mean = population mean.
         p_value, stat = stats.ttest_1samp(samples, pop_mean)
 
         # print("p value:", p_value, "stat:", stat)
         return p_value, stat, pop_mean
 
+def run_anova(list_of_samples):
+    from scipy.stats import f_oneway
+    stat, p = f_oneway(*list_of_samples)
+    print('stat=%.3f, p=%.3f' % (stat, p))
+    if p > 0.05:
+        print('Probably the same distribution')
+    else:
+        print('Probably different distributions')
+    return stat, p
+
+def run_stat_test_df (df):
+    from scipy.stats import ttest_ind
+    value_list_list = df.T.values.tolist()
+
+    _ , p_value = run_anova(value_list_list)
+
+    if p_value > 0.05:
+        print('Probably the same distribution')
+        return df
+    
+    first_column = df.iloc[:, 0]
+
+    stat, p_value = ttest_ind(first_column, alternative='greater')
+    
 class OptimalNClusters:
     def __init__(self, dataset, min_n_clusters, max_n_clusters, clusteringAlgorithmList: list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list):
         """
@@ -169,19 +193,66 @@ class OptimalNClusters:
         return csv_file_path
     
     def run_n_clusters_on_cluster_algo(self, cluster_algo_obj):
-        random_state_sil_score_df = pd.DataFrame()
+        csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
+        if os.path.exists(csv_file_path):
+            random_state_sil_score_df = get_df_by_path(csv_file_path)
+        else:
+            random_state_sil_score_df = pd.DataFrame()
 
-        for n_classes in range(self.min_n_clusters, self.max_n_clusters + 1):
-            temp_df = self.get_silhouetter_score_df(cluster_algo_obj, n_classes)
+            for n_classes in range(self.min_n_clusters, self.max_n_clusters + 1):
+                temp_df = self.get_silhouetter_score_df(cluster_algo_obj, n_classes)
+                
+                if random_state_sil_score_df.empty:
+                    random_state_sil_score_df = temp_df
+                else:
+                    random_state_sil_score_df = pd.concat([random_state_sil_score_df, temp_df], axis = 1)
 
-            if random_state_sil_score_df.empty:
-                random_state_sil_score_df = temp_df
-            else:
-                random_state_sil_score_df = pd.concat([random_state_sil_score_df, temp_df], axis = 1)
-        
+        print(f"{cluster_algo_obj.get_name()} \n {random_state_sil_score_df}")
+
+        stat_test_results_df, sorted_df = sort_df_by_stat_test(random_state_sil_score_df)
+
+        ##################################### save results
+        csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
+        sorted_df.to_csv(csv_file_path)
+
+        csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name()+"StatisticalTestResults")
+        stat_test_results_df.to_csv(csv_file_path)
+        return sorted_df
+
+    def run_n_clusters_on_cluster_algo_old(self, cluster_algo_obj):
+        csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
+        if os.path.exists(csv_file_path) and False:
+            random_state_sil_score_df = get_df_by_path(csv_file_path)
+
+        else:
+            random_state_sil_score_df = pd.DataFrame()
+
+            sil_score_list_list = []
+            
+            for n_classes in range(self.min_n_clusters, self.max_n_clusters + 1):
+                temp_df = self.get_silhouetter_score_df(cluster_algo_obj, n_classes)
+                
+                if random_state_sil_score_df.empty:
+                    random_state_sil_score_df = temp_df
+                else:
+                    random_state_sil_score_df = pd.concat([random_state_sil_score_df, temp_df], axis = 1)
+
+        print(f"{cluster_algo_obj.get_name()} \n {random_state_sil_score_df}")
+
+        sort_df_by_stat_test(random_state_sil_score_df)
+
+        # sil_score_list_list = random_state_sil_score_df.T.values.tolist()
+        # stat, p_value = run_anova(sil_score_list_list)
+
         df_to_save = random_state_sil_score_df.copy()
-        maxList = df_to_save.idxmax(axis=1)
-        df_to_save['max_value_n_clusters'] = maxList
+       
+        # maxList = df_to_save.idxmax(axis=1)
+        # df_to_save['max_value_n_clusters'] = maxList
+        
+        # df_to_save = df_to_save.T
+        # df_to_save['P-Value'] = p_value         
+        # df_to_save['T-Statistics'] = stat
+        # df_to_save = df_to_save.T
 
         ##################################### save results
         csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
@@ -206,16 +277,42 @@ class OptimalNClusters:
 
         result_df = pd.DataFrame(silhouette_score_list, index=self.random_state_list).T
 
-        p_value, stat, mean = sample_and_popluation_mean_test(silhouette_score_list)
-        result_df['Mean'] = mean
-        result_df['P-Value'] = p_value            
-        result_df['T-Statistics'] = stat
+        # p_value, stat, mean = sample_and_popluation_mean_test(silhouette_score_list)
+        # result_df['Mean'] = mean
+        # result_df['P-Value'] = p_value            
+        # result_df['T-Statistics'] = stat
 
         result_df = result_df.T
         result_df.rename(columns = {0 : n_clusters}, inplace = True)
         
         return result_df        
     
+    def get_silhouetter_score_df_old(self, clusterAlgo, n_clusters):
+        dataset_df = self.dataset.get_data_frame()
+        clusterAlgo.setNClusters(n_clusters)
+        clusterAlgo.setDataFrame(dataset_df)
+
+        silhouette_score_list = []
+
+
+        for random_state in self.random_state_list:
+            print(clusterAlgo.get_name(), "with", n_clusters, "clusters and random state", random_state)
+            clusterAlgo.setRandomState(random_state)
+            clusterAlgo.createLabels()
+            temp_sil_score = clusterAlgo.getSilhouetteScore()
+            silhouette_score_list.append(temp_sil_score)
+
+        result_df = pd.DataFrame(silhouette_score_list, index=self.random_state_list).T
+
+        # p_value, stat, mean = sample_and_popluation_mean_test(silhouette_score_list)
+        # result_df['Mean'] = mean
+        # result_df['P-Value'] = p_value            
+        # result_df['T-Statistics'] = stat
+
+        result_df = result_df.T
+        result_df.rename(columns = {0 : n_clusters}, inplace = True)
+        
+        return result_df  
 
     def run_anomaly(self):
         n_clusters = self.dataset.get_n_clusters()
@@ -253,6 +350,6 @@ if __name__ == "__main__":
         
         # onc.run_stat_test(clustering_algorithm_obj_list[0], num_classes+1)
         # onc.run_n_clusters_on_cluster_algo(clustering_algorithm_obj_list[0])
-        # onc.run_all()
-        onc.run_anomaly()
+        onc.run_all()
+        # onc.run_anomaly()
         # onc.runRandomStates(ds, num_classes, (num_classes + num_n_clusters_tries), random_state_list[0:3])

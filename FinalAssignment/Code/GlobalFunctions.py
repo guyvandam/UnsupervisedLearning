@@ -2,7 +2,7 @@ import GlobalParameters
 import os
 import numpy as np
 from scipy import stats
-
+import pandas as pd
 
 def get_file_path(file_name, folder_path):
     file_path = os.path.join(folder_path, file_name)
@@ -57,3 +57,12 @@ def get_sample_and_popluation_mean_test(samples):
 
         # print("p value:", p_value, "stat:", stat)
         return p_value, stat
+
+def get_df_by_path(csv_file_path):
+    df = pd.read_csv(csv_file_path, index_col = False)
+    columns_to_delete = ['Unnamed: 0', 'Unnamed 0.1']
+    for column in columns_to_delete:
+        if column in df.columns:
+            del df[column]
+    return df
+    
