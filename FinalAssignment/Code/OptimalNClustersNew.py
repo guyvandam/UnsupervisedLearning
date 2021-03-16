@@ -48,7 +48,9 @@ class OptimalNClusters:
         self.random_state_list = GlobalParameters.random_state_list
         self.clusteringAlgorithmList = clusteringAlgorithmList
 
-        self.is_create_new = True
+        self.is_create_new = False
+
+
     def run_all(self):
         n_clusters_range = range(self.min_n_clusters, self.max_n_clusters + 1)
 
@@ -115,9 +117,10 @@ class OptimalNClusters:
         stat_test_results_df, sorted_df = sort_df_by_stat_test(random_state_sil_score_df)
 
         ##################################### save results
-        sorted_df.loc['mean'] = sorted_df.mean()
+        sorted_df_copy = sorted_df.copy()
+        sorted_df_copy.loc['mean'] = sorted_df_copy.mean()
         csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
-        sorted_df.to_csv(csv_file_path)
+        sorted_df_copy.to_csv(csv_file_path)
 
         csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name()+"StatisticalTestResults")
         stat_test_results_df.to_csv(csv_file_path)
@@ -140,7 +143,7 @@ class OptimalNClusters:
 
         result_df = pd.DataFrame(silhouette_score_list, index=self.random_state_list)
 
-        result_df.rename(columns = {0 : n_clusters}, inplace = True)
+        result_df.rename(columns = {0 : str(n_clusters)}, inplace = True)
         
         return result_df        
 
@@ -171,7 +174,7 @@ class OptimalNClusters:
 if __name__ == "__main__":
 
     ################### try 3 more clusters.
-    num_n_clusters_tries = 1
+    num_n_clusters_tries = 3
     for ds in DatasetsImportFile.dataset_obj_list:
         ds.prepareDataset()
         num_classes = ds.get_n_clusters()
