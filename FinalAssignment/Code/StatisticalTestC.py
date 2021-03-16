@@ -80,8 +80,8 @@ def sort_df_by_stat_test(df):
         sorted_dict = dict(sorted(dict_list.items(), key=cmp_to_key(compare)))
         sorted_df = pd.DataFrame(sorted_dict)
     
-    print("sorted_df \n", sorted_df)
-    print("test results \n", test_results_df)
+    # print("sorted_df \n", sorted_df)
+    # print("test results \n", test_results_df)
 
     return test_results_df, sorted_df
 if __name__ == '__main__':

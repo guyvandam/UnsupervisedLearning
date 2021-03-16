@@ -50,7 +50,7 @@ class StatisticalTest():
         for clusterAlgorithm in self.clusteringAlgorithmList:
             clusterAlgorithm.setDataFrame(dataSet.get_data_frame())
             # clusterAlgorithm.setNClustersDatasetIndex(dataSet.getDatasetIndex()
-            clusterAlgorithm.setNClusters(dataSet.get_n_classes())
+            clusterAlgorithm.setNClusters(dataSet.get_n_clusters())
 
         winner = self.clusteringAlgorithmList[0]
         winnerSilhouetteList = winner.getSilhouetteScoreList(
@@ -87,7 +87,7 @@ class StatisticalTest():
         csv_file_path = get_csv_file_path(len(self.randomStateList), dataset_index)
         self.result.to_csv(csv_file_path)
 
-
-for ds in DatasetsImportFile.dataset_obj_list:
-    ST = StatisticalTest()
-    ST.createCSV(ds)
+if __name__ == "__main__":
+    for ds in DatasetsImportFile.dataset_obj_list:
+        ST = StatisticalTest()
+        ST.createCSV(ds)

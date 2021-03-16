@@ -10,10 +10,10 @@ ds.prepareDataset()
 df = ds.get_data_frame()
 results = clf.fit_predict(df)
 
-print(list(results))
+# print(list(results))
 results = (results + 1) / 2
 results = results.astype(bool)
-results = np.invert(results)
+# results = np.invert(results)
 
 
 print(df.iloc[results])

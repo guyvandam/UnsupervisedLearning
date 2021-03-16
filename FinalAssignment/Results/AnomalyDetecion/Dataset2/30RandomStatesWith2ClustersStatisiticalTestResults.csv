@@ -1,0 +1,7 @@
+,p_value,stat,test,result
+0,2.8833423089270324e-06,7402.966784557107,all_data_KMeans = KMeans_anomaly_detection = KNN_anomaly_detection,False
+1,2.4601170942646223e-06,637.5603631465043,KMeans_anomaly_detection = all_data_KMeans,False
+2,1.2300585471323112e-06,637.5603631465043,KMeans_anomaly_detection > all_data_KMeans,False
+3,0.0001345281039399733,-86.20841638367426,KNN_anomaly_detection = KMeans_anomaly_detection,False
+4,0.99993273594803,-86.20841638367426,KNN_anomaly_detection > KMeans_anomaly_detection,True
+5,0.3375407884839533,1.2506492055510186,KNN_anomaly_detection = all_data_KMeans,True

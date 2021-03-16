@@ -181,11 +181,45 @@ class ClusteringAlgorithm:
         randomStateKLDivergenceDict['Average'] = np.mean(
             list(randomStateKLDivergenceDict.values()))
 
-        ####################################### run statistical test
+        ###################################### run statistical test
         p_value, stat = get_sample_and_popluation_mean_test(kl_divergence_list)
 
         randomStateKLDivergenceDict['P-Value'] = p_value
         randomStateKLDivergenceDict['T-Statistics'] = stat
+        if len(set(randomStateKLDivergenceDict.values())) == 1 and not len(randomStateList) == 1:
+            print(f"Random State Doesn't make a change for {self.name}")
+        return randomStateKLDivergenceDict
+
+    def check_against_external_class_random_state_list(self, randomStateList: list, externalLabels: list) -> dict:
+        """
+        calculate fitment to external classifier using K-L divergence, with a list of different random states.
+        Args:
+            randomStateList (list): list of random states
+            externalLabels (list): list of external labels
+
+        Returns:
+            dict: key - random state, value - KL divergence with that random state.
+        """
+        randomStateKLDivergenceDict = {}  # key - randoom state, value mutual info score.
+        nClusters = len(set(externalLabels))
+        self.setNClusters(nClusters)
+        kl_divergence_list = []
+        for randomState in randomStateList:
+            self.setRandomState(randomState)
+            self.createLabels()
+            kl_divergence_value = self.getKLDivergence(externalLabels)
+            randomStateKLDivergenceDict[str(
+                randomState)] = kl_divergence_value
+            kl_divergence_list.append(kl_divergence_value)
+
+        # randomStateKLDivergenceDict['Average'] = np.mean(
+        #     list(randomStateKLDivergenceDict.values()))
+
+        # ###################################### run statistical test
+        # p_value, stat = get_sample_and_popluation_mean_test(kl_divergence_list)
+
+        # randomStateKLDivergenceDict['P-Value'] = p_value
+        # randomStateKLDivergenceDict['T-Statistics'] = stat
         if len(set(randomStateKLDivergenceDict.values())) == 1 and not len(randomStateList) == 1:
             print(f"Random State Doesn't make a change for {self.name}")
         return randomStateKLDivergenceDict
@@ -197,6 +231,7 @@ class ClusteringAlgorithm:
         Returns:
             float: Silhouette score
         """
+        if self.labels is None: self.createLabels()
         return silhouette_score(self.dataFrame, self.labels)
 
     def getSilhouetteScoreList(self, randomStateList: list) -> list:

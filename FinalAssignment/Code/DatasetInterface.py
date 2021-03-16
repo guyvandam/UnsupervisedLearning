@@ -59,6 +59,8 @@ class Dataset:
         Returns:
             pd.DataFrame: ground truth DataFrame
         """
+        if self.ground_truth == None:
+                self.prepareDataset()
         return self.ground_truth
 
     def get_index(self) -> int:
