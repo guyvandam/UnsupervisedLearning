@@ -68,6 +68,7 @@ class FitExternalClass:
         print(result_df)
 
         stat_test_results_df, sorted_df = sort_df_by_stat_test(result_df)
+        sorted_df.loc['mean'] = sorted_df.mean()
 
         ############################# save stat test results.
         file_name = f"{self.n_clusters}Clusters{len(self.randomStateList)}RandomStatesStatisticalTestResults.csv"

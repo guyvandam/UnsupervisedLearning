@@ -210,6 +210,7 @@ class OptimalNClusters:
         print(f"{cluster_algo_obj.get_name()} \n {random_state_sil_score_df}")
 
         stat_test_results_df, sorted_df = sort_df_by_stat_test(random_state_sil_score_df)
+        sorted_df.loc['mean'] = sorted_df.mean()
 
         ##################################### save results
         csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())

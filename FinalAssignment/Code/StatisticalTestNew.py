@@ -56,6 +56,7 @@ class StatisticalTest():
         ############################ save sorted.
         file_name = f"{num_random_stats}RandomStatesWith{n_clusters}ClustersSorted.csv"
         csv_file_path = get_csv_file_path(len(self.randomStateList), dataset_index, n_clusters, file_name)
+        sorted_df.loc['mean'] = sorted_df.mean()
         sorted_df.to_csv(csv_file_path)
 
 

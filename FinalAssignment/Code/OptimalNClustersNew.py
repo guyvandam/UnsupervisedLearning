@@ -46,9 +46,9 @@ class OptimalNClusters:
         self.min_n_clusters = min_n_clusters
         self.max_n_clusters = max_n_clusters
         self.random_state_list = GlobalParameters.random_state_list
-        self.clusteringAlgorithmList = clusteringAlgorithmList[:3]
+        self.clusteringAlgorithmList = clusteringAlgorithmList
 
-        self.is_create_new = False
+        self.is_create_new = True
     def run_all(self):
         n_clusters_range = range(self.min_n_clusters, self.max_n_clusters + 1)
 
@@ -115,6 +115,7 @@ class OptimalNClusters:
         stat_test_results_df, sorted_df = sort_df_by_stat_test(random_state_sil_score_df)
 
         ##################################### save results
+        sorted_df.loc['mean'] = sorted_df.mean()
         csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
         sorted_df.to_csv(csv_file_path)
 

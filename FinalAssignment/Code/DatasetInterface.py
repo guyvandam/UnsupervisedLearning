@@ -59,7 +59,7 @@ class Dataset:
         Returns:
             pd.DataFrame: ground truth DataFrame
         """
-        if self.ground_truth == None:
+        if self.ground_truth is None:
                 self.prepareDataset()
         return self.ground_truth
 

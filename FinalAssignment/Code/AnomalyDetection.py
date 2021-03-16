@@ -69,8 +69,8 @@ def run_random_states(dataset):
 
     stat_test_results_df, sorted_df = sort_df_by_stat_test(result_df)
     
-    mean_df = sorted_df.mean(axis = 0).to_frame().T
-    mean_df.plot.bar()
+    sorted_df.loc['mean'] = sorted_df.mean()
+    # mean_df.plot.bar()
     ############################# save stat test results
     file_name = f"{num_random_stats}RandomStatesWith{n_clusters}ClustersStatisiticalTestResults.csv"
     csv_file_path = get_csv_file_path(num_random_stats, dataset_index, n_clusters, file_name)
