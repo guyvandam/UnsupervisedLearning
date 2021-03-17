@@ -1,5 +1,0 @@
-Assuming a data-set is one word. hence dataset.
-
-
-would've made more sense to do a list or dict of values in global parameters for the path and number of parameters.
-it's 2 datasets so it's not so bad.
