@@ -32,7 +32,7 @@ def compare(item1, item2):
         # add_results_to_df(result, p_value, stat, test)
         add_results_to_df(test_succes, p_value, stat, test)
 
-        test = f"{k2} > {k1}"
+        # test = f"{k2} > {k1}"
         test = f"{k1} > {k2}"
         stat, p_value = ttest_ind(item1, item2, alternative='greater') # item1 is bigger than item 2.
         test_succes = p_value > 0.05
@@ -72,17 +72,17 @@ def run_anova(df):
 def sort_df_by_stat_test(df):
     global test_results_df
     test_results_df = pd.DataFrame(columns=['p_value', 'stat', 'test', 'result'])
-
+    
     sorted_df = df.copy()
     _ , p_value = run_anova(df)
-
+    
     if p_value < 0.05:
         dict_list = df.to_dict()
         sorted_dict = dict(sorted(dict_list.items(), key=cmp_to_key(compare)))
         sorted_df = pd.DataFrame(sorted_dict)
     
     # print("sorted_df \n", sorted_df)
-    # print("test results \n", test_results_df)
+    print("test results \n", test_results_df)
 
     return test_results_df, sorted_df
 if __name__ == '__main__':

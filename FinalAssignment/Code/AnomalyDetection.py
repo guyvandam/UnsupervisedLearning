@@ -10,7 +10,7 @@ import GlobalFunctions
 # cluster with kmeans before and after removing anomalies.
 anomaly_detection_algorithms_obj_list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list[0:1]
 # anomaly_detection_algorithms_obj_list.append()
-cluster_algo_obj_list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list[0:3]
+cluster_algo_obj_list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list
 
 random_state_list = GlobalParameters.random_state_list
 
@@ -39,6 +39,7 @@ def n (dataset, random_state):
     algo_name_sil_score_dict[f"all_data_{main_cluster_algo_obj.get_name()}"] = silhouette_score
     
     for cluster_algo_obj in cluster_algo_obj_list:
+        print("running", cluster_algo_obj.get_name())
         cluster_algo_obj.setRandomState(GlobalParameters.random_state)
         cluster_algo_obj.setNClusters(n_clusters)
         _, clean_data_df = cluster_algo_obj.get_anomalous_dataframe_negative_silhouette_coefficients(dataset)
@@ -62,6 +63,7 @@ def run_random_states(dataset):
     dataset_index = dataset.get_index()
     n_clusters = dataset.get_n_clusters()
     for random_state in random_state_list:
+        print("#################### running random state", random_state)
         dic = n(dataset, random_state)
         result_dict[random_state] = dic
 

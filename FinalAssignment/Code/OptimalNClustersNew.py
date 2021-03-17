@@ -119,6 +119,8 @@ class OptimalNClusters:
         ##################################### save results
         sorted_df_copy = sorted_df.copy()
         sorted_df_copy.loc['mean'] = sorted_df_copy.mean()
+        sorted_df_copy.loc['pct_change'] = sorted_df_copy.T['mean'].pct_change().T * 100
+
         csv_file_path = self.get_cluster_algo_csv_file_path(cluster_algo_obj.get_name())
         sorted_df_copy.to_csv(csv_file_path)
 
@@ -175,14 +177,10 @@ if __name__ == "__main__":
 
     ################### try 3 more clusters.
     num_n_clusters_tries = 3
-    for ds in DatasetsImportFile.dataset_obj_list:
+    for ds in DatasetsImportFile.dataset_obj_list[:-1]:
         ds.prepareDataset()
         num_classes = ds.get_n_clusters()
         
         onc = OptimalNClusters(ds, num_classes, num_classes + num_n_clusters_tries)
-        
-        # onc.run_stat_test(clustering_algorithm_obj_list[0], num_classes+1)
-        # onc.run_n_clusters_on_cluster_algo(clustering_algorithm_obj_list[0])
+    
         onc.run_all()
-        # onc.run_anomaly()
-        # onc.runRandomStates(ds, num_classes, (num_classes + num_n_clusters_tries), random_state_list[0:3])

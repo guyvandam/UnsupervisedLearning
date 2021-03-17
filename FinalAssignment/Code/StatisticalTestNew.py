@@ -2,7 +2,7 @@ import ClusteringAlgorithmsImportFile
 import DatasetsImportFile
 import GlobalParameters
 import GlobalFunctions
-
+from Dataset2 import Dataset2
 from StatisticalTestC import sort_df_by_stat_test
 def get_csv_file_name(num_random_stats, n_clusters):
     file_name = f"{num_random_stats}RandomStatesSilhouetteScoresWith{n_clusters}Clusters.csv"
@@ -51,6 +51,7 @@ class StatisticalTest():
         ############################# save stat test results
         file_name = f"{num_random_stats}RandomStatesWith{n_clusters}ClustersStatisiticalTestResults.csv"
         csv_file_path = get_csv_file_path(len(self.randomStateList), dataset_index, n_clusters, file_name)
+        print(stat_test_results_df)
         stat_test_results_df.to_csv(csv_file_path)
        
         ############################ save sorted.
@@ -62,6 +63,6 @@ class StatisticalTest():
 
 if __name__ == "__main__":
     ST = StatisticalTest()
-    for ds in DatasetsImportFile.dataset_obj_list:
-        ds.prepareDataset()
-        ST.createCSV(ds)
+    ds = Dataset2()
+    ds.prepareDataset()
+    ST.createCSV(ds)
