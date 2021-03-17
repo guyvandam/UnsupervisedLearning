@@ -1,0 +1,21 @@
+30RandomStatesWith2ClustersStatisiticalTestResults
+p_value,stat,test,result
+1.60E-78,394.90,KMeans = GMM = FuzzyCMeans = Agglomerative = Spectral,FALSE
+4.08E-13,-9.23,GMM = KMeans,FALSE
+1.00E+00,-9.23,GMM > KMeans,TRUE
+6.16E-12,8.53,FuzzyCMeans = GMM,FALSE
+3.08E-12,8.53,FuzzyCMeans > GMM,FALSE
+6.16E-12,8.53,FuzzyCMeans = GMM,FALSE
+3.08E-12,8.53,FuzzyCMeans > GMM,FALSE
+8.25E-47,-43.04,FuzzyCMeans = KMeans,FALSE
+1.00E+00,-43.04,FuzzyCMeans > KMeans,TRUE
+1.74E-196,-13654.22,Agglomerative = FuzzyCMeans,FALSE
+1.00E+00,-13654.22,Agglomerative > FuzzyCMeans,TRUE
+1.35E-15,-10.74,Agglomerative = GMM,FALSE
+1.00E+00,-10.74,Agglomerative > GMM,TRUE
+1.74E-14,10.05,Spectral = GMM,FALSE
+8.71E-15,10.05,Spectral > GMM,FALSE
+4.90E-130,1065.97,Spectral = FuzzyCMeans,FALSE
+2.45E-130,1065.97,Spectral > FuzzyCMeans,FALSE
+5.00E-51,50.82,Spectral = KMeans,FALSE
+2.50E-51,50.82,Spectral > KMeans,FALSE

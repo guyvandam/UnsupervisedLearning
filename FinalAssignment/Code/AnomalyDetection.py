@@ -5,12 +5,12 @@ from KMeans import KMeansAlgorithm
 import GlobalParameters
 import pandas as pd
 from Dataset2 import Dataset2
+from Dataset1 import Dataset1
 from StatisticalTestC import sort_df_by_stat_test
 import GlobalFunctions
 # cluster with kmeans before and after removing anomalies.
-anomaly_detection_algorithms_obj_list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list[0:1]
-# anomaly_detection_algorithms_obj_list.append()
-cluster_algo_obj_list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list
+
+cluster_algo_obj_list = ClusteringAlgorithmsImportFile.clustering_algorithm_obj_list[0:3]
 
 random_state_list = GlobalParameters.random_state_list
 
@@ -49,7 +49,7 @@ def n (dataset, random_state):
         main_cluster_algo_obj.createLabels()
         silhouette_score = main_cluster_algo_obj.getSilhouetteScore()
         algo_name_sil_score_dict[f"{cluster_algo_obj.get_name()}_anomaly_detection"] = silhouette_score
-    
+    print("running loc")
     clean_data_df = get_clean_df_local_outlier_factor(dataset)
     main_cluster_algo_obj.setDataFrame(clean_data_df)
     main_cluster_algo_obj.createLabels()
@@ -84,5 +84,5 @@ def run_random_states(dataset):
     sorted_df.to_csv(csv_file_path)
 
 if __name__ == "__main__":
-    dataset = Dataset2()
+    dataset = Dataset1()
     run_random_states(dataset)
