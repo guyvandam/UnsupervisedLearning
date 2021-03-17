@@ -1,0 +1,17 @@
+30RandomStatesWith3ClustersStatisiticalTestResults
+p_value,stat,test,result
+0.00E+00,60623857.57,all_data_KMeans = KMeans_anomaly_detection = GMM_anomaly_detection = FuzzyCMeans_anomaly_detection = KNN_anomaly_detection,FALSE
+1.11E-154,4035.30,KMeans_anomaly_detection = all_data_KMeans,FALSE
+5.56E-155,4035.30,KMeans_anomaly_detection > all_data_KMeans,FALSE
+6.52E-264,360113.81,GMM_anomaly_detection = KMeans_anomaly_detection,FALSE
+3.26E-264,360113.81,GMM_anomaly_detection > KMeans_anomaly_detection,FALSE
+1.54E-171,-8071.08,FuzzyCMeans_anomaly_detection = GMM_anomaly_detection,FALSE
+1.00E+00,-8071.08,FuzzyCMeans_anomaly_detection > GMM_anomaly_detection,TRUE
+3.30E-75,153.54,FuzzyCMeans_anomaly_detection = KMeans_anomaly_detection,FALSE
+1.65E-75,153.54,FuzzyCMeans_anomaly_detection > KMeans_anomaly_detection,FALSE
+1.54E-171,-8071.08,FuzzyCMeans_anomaly_detection = GMM_anomaly_detection,FALSE
+1.00E+00,-8071.08,FuzzyCMeans_anomaly_detection > GMM_anomaly_detection,TRUE
+9.25E-170,-7501.75,KNN_anomaly_detection = KMeans_anomaly_detection,FALSE
+1.00E+00,-7501.75,KNN_anomaly_detection > KMeans_anomaly_detection,TRUE
+9.57E-43,39.78,KNN_anomaly_detection = all_data_KMeans,FALSE
+4.79E-43,39.78,KNN_anomaly_detection > all_data_KMeans,FALSE
