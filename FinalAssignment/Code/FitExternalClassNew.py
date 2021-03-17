@@ -25,7 +25,7 @@ class FitExternalClass:
             randomStateList (list, optional): list of random states. Defaults to GlobalParameters.randomStateList.
             clusteringAlgorithmList (list, optional): list of Clustering Algorithm Objects. Defaults to ClusteringAlgorithms.clusteringAlgorithmList.
         """
-        self.clusteringAlgorithmList = clusteringAlgorithmList[0:2]
+        self.clusteringAlgorithmList = clusteringAlgorithmList
         self.randomStateList = randomStateList
 
     def get_csv_file_name(self):
@@ -102,5 +102,5 @@ class FitExternalClass:
 # Due to some memory interference issues with saving the figure and acessing the CSV file for loading the data, this function can't loop over the datasets and save their figures in one run.
 if __name__ == '__main__':
     fec = FitExternalClass()
-    fec.createCSV(Dataset1())
-    # fec.createCSV(Dataset2())
+    # fec.createCSV(Dataset1())
+    fec.createCSV(Dataset2())

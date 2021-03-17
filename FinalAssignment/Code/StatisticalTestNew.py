@@ -62,6 +62,6 @@ class StatisticalTest():
 
 if __name__ == "__main__":
     ST = StatisticalTest()
-    for ds in DatasetsImportFile.dataset_obj_list[1:]:
+    for ds in DatasetsImportFile.dataset_obj_list:
         ds.prepareDataset()
         ST.createCSV(ds)

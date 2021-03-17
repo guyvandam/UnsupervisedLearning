@@ -32,7 +32,8 @@ def compare(item1, item2):
         # add_results_to_df(result, p_value, stat, test)
         add_results_to_df(test_succes, p_value, stat, test)
 
-        test = test = f"{k1} > {k2}"
+        test = f"{k2} > {k1}"
+        test = f"{k1} > {k2}"
         stat, p_value = ttest_ind(item1, item2, alternative='greater') # item1 is bigger than item 2.
         test_succes = p_value > 0.05
         if p_value > 0.05:
